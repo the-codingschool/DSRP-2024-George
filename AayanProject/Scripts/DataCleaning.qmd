@@ -1,0 +1,53 @@
+Data Cleaning
+
+```{r setup}
+
+#loading in packages
+library(titanic)
+library(dplyr)
+library(janitor)
+library(ggplot2)
+library(tidyr)
+library(Hmisc)
+```
+
+Link to Dataset: <https://www.kaggle.com/datasets/jainaru/global-ecological-footprint-2023>
+
+```{r}
+
+#loading in the dataset
+fileName = list.files("data")
+data <- read.csv(paste0("data/",fileName))
+
+#looking at part of the data
+head(data)
+```
+
+```{r}
+
+#clean names
+data <- clean_names(data, case="snake")
+
+#spelling expectancy right
+data <- rename(data, life_expectancy = life_exectancy)
+
+head(data)
+```
+
+No need to remove_empty since there are no entry points
+
+```{r}
+
+#dimensions of data
+cat("The Dimensions are:",nrow(data), "x", ncol(data))
+```
+
+EDA on the footprint features
+
+```{r}
+
+#select the features ending with "footprint"
+footprint_features <- select(data, ends_with("footprint"))
+summary(footprint_features) #look at the console for this one
+
+```
