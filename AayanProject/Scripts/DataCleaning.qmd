@@ -13,6 +13,8 @@ library(Hmisc)
 
 Link to Dataset: <https://www.kaggle.com/datasets/jainaru/global-ecological-footprint-2023>
 
+-   The Kaggle view is very helpful and easy to read
+
 ```{r}
 
 #loading in the dataset
@@ -42,12 +44,25 @@ No need to remove_empty since there are no entry points
 cat("The Dimensions are:",nrow(data), "x", ncol(data))
 ```
 
+```{r}
+
+#pandas .info()
+str(data) #look at console
+```
+
 EDA on the footprint features
 
 ```{r}
 
 #select the features ending with "footprint"
-footprint_features <- select(data, ends_with("footprint"))
+footprint_features <- select(data, "country", contains("footprint"))
+print(footprint_features)
 summary(footprint_features) #look at the console for this one
 
+```
+
+```{r}
+#country versus it's total eco footprint
+data <- rename(data, total_footprint = total_ecological_footprint_consumption)
+select(data, "country", "total_footprint")
 ```
