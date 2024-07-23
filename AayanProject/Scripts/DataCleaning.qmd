@@ -55,14 +55,30 @@ EDA on the footprint features
 ```{r}
 
 #select the features ending with "footprint"
-footprint_features <- select(data, "country", contains("footprint"))
+footprint_features <- select(data, "country", contains("footprint"), "built_up_land")
 print(footprint_features)
 summary(footprint_features) #look at the console for this one
+#total eco footprint is the sum of the other "footprints" and "build up land"
+```
 
+Countries vs. Their More Composite Features
+
+```{r}
+#country versus its total eco footprint
+data <- rename(data, total_footprint = total_ecological_footprint_consumption)
+select(data, "country", "total_footprint")
 ```
 
 ```{r}
-#country versus it's total eco footprint
-data <- rename(data, total_footprint = total_ecological_footprint_consumption)
-select(data, "country", "total_footprint")
+
+#country versus its eco difference
+data <- rename(data, eco_difference = ecological_deficit_or_reserve) #rename ecological deficit or reserve to something easier
+select(data, "country", "eco_difference")
+```
+
+```{r}
+
+#country vs its HDI
+
+select(data, "country", "hdi")
 ```
