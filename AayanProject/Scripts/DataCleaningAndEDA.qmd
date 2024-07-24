@@ -68,7 +68,7 @@ EDA on the footprint features
 footprint_features <- select(data, "country", contains("footprint"))
 print(footprint_features)
 summary(footprint_features) #look at the console for this one
-#total eco footprint is the sum of the other "footprints" and "build up land"
+#total eco footprint is the sum of the other "footprints"
 ```
 
 Countries vs. Their More Composite Features
@@ -98,10 +98,20 @@ Making New Features
 
 #eco difference as a binary variable
 featured_data <- mutate(data, is_sustainable = eco_difference>0)
-select(featured_data, "country", "is_sustainable")
+featured_data
 
 #a country with a positive eco_difference is sustainable because they used less resources than their country can provide
 
 #plot the count of each
 ggplot(featured_data, mapping = aes(x=is_sustainable)) + geom_bar() + labs(title = "Number of Sustainable Countries", x="Is Sustainable")
 ```
+
+```{r}
+#sdgi, life expectancy, per capita gdp, population - features not directly associated with footprint and sustainability
+
+other_and_sustainable_data = select(featured_data, "country", "sdgi", "life_expectancy", "per_capita_gdp", "population_millions", "is_sustainable")
+other_and_sustainable_data = filter(other_and_sustainable_data, !is.na(is_sustainable))
+other_and_sustainable_data
+```
+
+Possible Research Question: Do \[these\] factors correlate on whether a country is self sustainable, and if they do, how do they correlate?
