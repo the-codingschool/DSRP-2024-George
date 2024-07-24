@@ -9,6 +9,7 @@ library(janitor)
 library(ggplot2)
 library(tidyr)
 library(Hmisc)
+library(stringr)
 ```
 
 Link to Dataset: <https://www.kaggle.com/datasets/jainaru/global-ecological-footprint-2023>
@@ -41,6 +42,20 @@ total_footprint = total_ecological_footprint_consumption,
 num_earth = number_of_earths_required, 
 num_countries = number_of_countries_required)
 #the last 4 just make them easier to work with
+```
+
+```{r}
+#filling in empty strings as nulls
+data[data == ""] <- NA
+data[data == " "] <- NA
+
+#making population numeric data
+data = mutate(data, population = as.numeric(population_millions)*1000000)
+
+#making gdp numeric
+data$per_capita_gdp <- gsub(",", "", data$per_capita_gdp)
+data$per_capita_gdp <- gsub("\\$", "", data$per_capita_gdp)
+data = mutate(data, per_capita_gdp = as.numeric(per_capita_gdp))
 
 
 head(data)
@@ -109,9 +124,25 @@ ggplot(featured_data, mapping = aes(x=is_sustainable)) + geom_bar() + labs(title
 ```{r}
 #sdgi, life expectancy, per capita gdp, population - features not directly associated with footprint and sustainability
 
-other_and_sustainable_data = select(featured_data, "country", "sdgi", "life_expectancy", "per_capita_gdp", "population_millions", "is_sustainable")
+other_and_sustainable_data = select(featured_data, "country", "sdgi", "life_expectancy", "per_capita_gdp", "population", "is_sustainable")
 other_and_sustainable_data = filter(other_and_sustainable_data, !is.na(is_sustainable))
+
+# IMPORTANT: CONVERT GDP AND POPULATION TO NUMERICAL DATA
+
 other_and_sustainable_data
 ```
 
 Possible Research Question: Do \[these\] factors correlate on whether a country is self sustainable, and if they do, how do they correlate?
+
+EDA and Plotting of these Features
+
+```{r}
+#repeat of previous graph
+#chart of number of self sustainable countries
+ggplot(featured_data, mapping = aes(x=is_sustainable)) + geom_bar() + labs(title = "Number of Sustainable Countries", x="Is Sustainable")
+```
+
+```{r}
+#look at console for summary of data
+summary(other_and_sustainable_data)
+```
