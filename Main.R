@@ -1,11 +1,12 @@
 install.packages("ggpubr")
-
+install.packages("DescTools")
 library(tidyr) 
 library(tidyverse) 
 library(janitor)
 library(dplyr) 
 library(ggplot2) 
 library(ggpubr)
+library(DescTools)
 
 #Reading in data, cleaning names, and data summary
 data <- read_csv("data/Global Ecological Footprint 2023.csv")
@@ -29,32 +30,77 @@ summary(data)
 
 
 #Groups countries based on sustainability 
+#Num_countries_required = ecological_deficit_or_reserve
 data <- mutate(data, category = case_when(num_countries_required < 1 & num_earths_required > 1 ~ "1",
                                   num_countries_required < 1 & num_earths_required < 1 ~ "2", 
                                   num_countries_required > 1 & num_earths_required > 1 ~ "3",
                                   num_countries_required > 1 & num_earths_required < 1 ~ "4"))
 
-cat1 <- filter(data, category == "1") 
-cat2 <- filter(data, category == "2")
-cat3 <- filter(data, category == "3")
-cat4 <- filter(data, category == "4")
+ggplot(data, aes(x = category, y = num_countries_required)) + 
+  geom_boxplot()+
+  ylim(0, 20) +
+  labs(title = "Number of Countries Required by Category", 
+       x = "Category",
+       y = "Number of Countries")
 
-cat1 #sustainable, but mainly due to higher resource availability
-print(range(cat1$total_consumption_footprint)) # 1.5 8.1
-print(range(cat1$total_biocapacity)) #1.718858 85.646110
-print(range(cat1$ecological_deficit_or_reserve)) #0.006197676 84.099056890
-cat2 #sustainable, normal resource availability
-print(range(cat2$total_consumption_footprint)) # 0.6 1.5
-print(range(cat2$total_biocapacity)) #1.106373 7.831302
-print(range(cat2$ecological_deficit_or_reserve)) #0.06758994 6.71295416
-cat3 #unsustainable, normal resource availability
-print(range(cat3$total_consumption_footprint)) # 1.5 13.1
-print(range(cat3$total_biocapacity)) #0.1041268 5.9670893
-print(range(cat3$ecological_deficit_or_reserve)) #-12.08733856  -0.06900837
-cat4 #unsustainable, but mainly due to lower resource availability
-print(range(cat4$total_consumption_footprint)) # 0.6 1.5
-print(range(cat4$total_biocapacity)) #[1] 0.2143352 1.1316615
-print(range(cat4$ecological_deficit_or_reserve)) #-1.13994368 -0.01019427
+num_countries_df <- select(data, category, num_countries_required)
+anova_result_countries <- aov(num_countries_required ~ category, data = num_countries_df, na.action = na.exclude)
+summary(anova_result_countries)
+
+ScheffeTest(anova_result_countries)
+#3-1, 3-2
+
+ggplot(data, aes(x = category, y = num_earths_required)) + 
+  geom_boxplot()+
+  labs(title = "Number of Earths Required by Category", 
+       x = "Category",
+       y = "Number of Countries")
+
+num_earth_df <- select(data, category, num_earths_required)
+anova_result_earth <- aov(num_earths_required ~ category, data = num_earth_df, na.action = na.exclude)
+summary(anova_result_earth)
+
+ScheffeTest(anova_result_earth)
+#2-1, 4-1, 3-2, 4-3
+
+ggplot(data, aes(x = category, y = ecological_deficit_or_reserve)) + 
+  geom_boxplot()+
+  labs(title = "Ecological Deficit or Reserve by Category", 
+       x = "Category",
+       y = "Ecological Deficit Or Reserve")
+
+ecological_df <- select(data, category, ecological_deficit_or_reserve)
+anova_result_ecological <- aov(ecological_deficit_or_reserve ~ category, data = ecological_df, na.action = na.exclude)
+summary(anova_result_ecological)
+
+ScheffeTest(anova_result_ecological)
+#2-1, 3-1, 4-1
+
+ggplot(data, aes(x = category, y = total_consumption_footprint)) + 
+  geom_boxplot()+
+  labs(title = "Total Biocapacity Required by Category", 
+       x = "Category",
+       y = "Number of Countries")
+
+consumption_df <- select(data, category, total_consumption_footprint)
+anova_result_consumption <- aov(total_consumption_footprint ~ category, data = consumption_df, na.action = na.exclude)
+summary(anova_result_consumption)
+
+ScheffeTest(anova_result_consumption)
+#2-1, 4-1, 3-2, 4-3
+
+ggplot(data, aes(x = category, y = total_biocapacity)) + 
+  geom_boxplot()+
+  labs(title = "Total Biocapacity Required by Category", 
+       x = "Category",
+       y = "Number of Countries")
+
+biocapacity_df <- select(data, category, total_biocapacity)
+anova_result_biocapacity <- aov(total_biocapacity ~ category, data = biocapacity_df, na.action = na.exclude)
+summary(anova_result_biocapacity)
+
+ScheffeTest(anova_result_biocapacity)
+#2-1, 3-1, 4-1
 
 #1.5 is the cutoff between planet sustainability and unsustainability
 
@@ -67,11 +113,16 @@ ggplot(data, aes(x = category, y = cropland_footprint))+
        x = "Category",
        y = "Cropland Footprint")
 
+#Category 1 and 3 have higher cropland footprint
+
 ggplot(data, aes(x = category, y = grazing_footprint))+
   geom_boxplot()+
+  ylim(0, 2)
   labs(title = "Grazing Footprint by Category", 
        x = "Category",
        y = "Grazing Footprint")
+  
+#Category 1 has higher grazing fooprint
 
 ggplot(data, aes(x = category, y = forest_product_footprint))+
   geom_boxplot()+
@@ -93,14 +144,85 @@ ggplot(data, aes(x = category, y = builtup_land_footprint))+
 
 ggplot(data, aes(x = category, y = carbon_footprint))+
   geom_boxplot()+
-  labs(title = "Built Up Land Footprint by Category", 
+  labs(title = "Carbon Footprint by Category", 
        x = "Category",
-       y = "Built Up Land Footprint")
+       y = "Carbon Land Footprint")
 
 #cropland, grazing, carbon*
 
 
+#Region in each group
+ggplot(data, aes(x = category, fill = region)) +
+  geom_bar()
+
+custom_colors <- c("Africa" = "red", "Asia-Pacific" = "blue", "Central America/Caribbean" = "green", "EU-27" = "orange", "North America" = "yellow", "Other Europe" = "pink", "South America" = "purple")
+
+cat1_count <- cat1 %>%
+  count(region) %>%
+  rename(value = n)
+
+print(cat1_count)
+
+cat1_pie <- ggplot(cat1_count, aes(x = "", y = value, fill = region)) +
+  geom_bar(stat = "identity", width = 1) +
+  coord_polar(theta = "y") +
+  theme_void() +
+  labs(title = "Category 1") +
+  scale_fill_manual(values = custom_colors)
+
+cat2_count <- cat2 %>%
+  count(region) %>%
+  rename(value = n)
+
+cat2_pie <- ggplot(cat2_count, aes(x = "", y = value, fill = region)) +
+  geom_bar(stat = "identity", width = 1) +
+  coord_polar(theta = "y") +
+  theme_void() +
+  labs(title = "Category 2") +
+  scale_fill_manual(values = custom_colors)
+
+cat3_count <- cat3 %>%
+  count(region) %>%
+  rename(value = n)
+
+cat3_pie <- ggplot(cat3_count, aes(x = "", y = value, fill = region)) +
+  geom_bar(stat = "identity", width = 1) +
+  coord_polar(theta = "y") +
+  theme_void() +
+  labs(title = "Category 3") +
+  scale_fill_manual(values = custom_colors)
+
+cat4_count <- cat4 %>%
+  count(region) %>%
+  rename(value = n)
+
+cat4_pie <- ggplot(cat4_count, aes(x = "", y = value, fill = region)) +
+  geom_bar(stat = "identity", width = 1) +
+  coord_polar(theta = "y") +
+  theme_void() +
+  labs(title = "Category 4") +
+  scale_fill_manual(values = custom_colors)
+
+
+figure <- ggarrange(cat1_pie, cat2_pie, cat3_pie, cat4_pie,
+                    ncol = 2, nrow = 2)
+figure
+
+#South America falls mainly in category 1, with 1 exception (Chile)
+#Central America falls mainly in category 2 and 3 
+#EU-27 falls only in category 1 and 3
+
 #Income in each group 
+cat1 <- filter(data, category == "1") 
+cat2 <- filter(data, category == "2")
+cat3 <- filter(data, category == "3")
+cat4 <- filter(data, category == "4")
+
+cat1 #num_countries <1 (sustainable) and num_earth >1 (unsustainable)
+cat2 #num_countries <1 (sustainable) and num_earth <1 (sustainable)
+cat3 #num_countries >1 (unsustainable) and num_earth >1 (unsustainable)
+cat4 #num_countries >1 (unsustainable) and num_earth <1 (sustainable)
+
 custom_colors <- c("HI" = "red", "LI" = "blue", "LM" = "green", "UM" = "orange")
 
 cat1_count <- cat1 %>%
