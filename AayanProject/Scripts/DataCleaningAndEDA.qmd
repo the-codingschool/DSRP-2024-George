@@ -123,9 +123,9 @@ ggplot(featured_data, mapping = aes(x=is_sustainable)) + geom_bar() + labs(title
 ```
 
 ```{r}
-#sdgi, life expectancy, per capita gdp, population - features not directly associated with footprint and sustainability
+#region (needs to be factorized), sdgi, hdi, life expectancy, per capita gdp, population - features not directly associated with footprint and sustainability
 
-other_and_sustainable_data = select(featured_data, "country", "sdgi", "hdi", "life_expectancy", "per_capita_gdp", "population_millions", "eco_difference", "is_sustainable")
+other_and_sustainable_data = select(featured_data, "country", "region", "sdgi", "hdi", "life_expectancy", "per_capita_gdp", "population_millions", "eco_difference", "is_sustainable")
 other_and_sustainable_data = filter(other_and_sustainable_data, !is.na(is_sustainable))
 
 other_and_sustainable_data
@@ -156,11 +156,22 @@ arrange(other_and_sustainable_data, desc(eco_difference))
 ```{r}
 #plotting population vs. eco difference, not using the binary variable here because it makes the graphing much more confusing
 
-ggplot(other_and_sustainable_data, mapping=aes(x=population_millions, y=eco_difference, color=population_millions)) + geom_point() + scale_x_log10(breaks=c(1e-01, 1e+00, 1e+01, 1e+02, 1e+03), labels=c("0.1", "1", "10", "100", "1000")) + ylim(-20, 20) + labs(title="Population vs. Eco Difference", x="Population (in millions, on a log scale)", y="Ecological Difference")
+ggplot(other_and_sustainable_data, mapping=aes(x=population_millions, y=eco_difference, color=population_millions)) + geom_point() + scale_x_log10(breaks=c(1e-01, 1e+00, 1e+01, 1e+02, 1e+03), labels=c("0.1", "1", "10", "100", "1000")) + ylim(-15, 15) + labs(title="Population vs. Eco Difference", x="Population (in millions, on a log scale)", y="Ecological Difference")
 
 #the y limit does eliminate the guyana, suriname, and french guinana outliers
 #note-population_millions is on a log scale
 
 #there isn't an obvious trend between population and eco_difference
 #however, it might become more clear in the model when using the binary target variable
+```
+
+```{r}
+#sdgi vs. eco diff
+ggplot(other_and_sustainable_data, mapping=aes(x=sdgi, y=eco_difference, color=region)) + geom_point() + ylim(-15, 15) + labs(title="SDGI vs. Ecological Difference", x="SDGI", y="Eco Difference")
+
+#hdi vs. eco diff
+ggplot(other_and_sustainable_data, mapping=aes(x=hdi, y=eco_difference, color=region)) + geom_point() + ylim(-15, 15) + labs(title="HDI vs. Ecological Difference", x="HDI", y="Eco Difference")
+
+#life_expectancy vs. eco diff
+ggplot(other_and_sustainable_data, mapping=aes(x=life_expectancy, y=eco_difference, color=region)) + geom_point() + ylim(-15, 15) + labs(title="Life Expectancy vs. Ecological Difference", x="Life Expectancy", y="Eco Difference")
 ```
