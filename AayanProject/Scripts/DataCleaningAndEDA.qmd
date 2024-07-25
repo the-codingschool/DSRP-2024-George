@@ -23,7 +23,7 @@ fileName = list.files("data")
 data <- read.csv(paste0("data/",fileName))
 
 #looking at part of the data
-head(data)
+data
 ```
 
 ```{r}
@@ -50,7 +50,8 @@ data[data == ""] <- NA
 data[data == " "] <- NA
 
 #making population numeric data
-data = mutate(data, population = as.numeric(population_millions)*1000000)
+data$population_millions <- gsub(",", "", data$population_millions)
+data = mutate(data, population_millions = as.numeric(population_millions))
 
 #making gdp numeric
 data$per_capita_gdp <- gsub(",", "", data$per_capita_gdp)
@@ -113,7 +114,7 @@ Making New Features
 
 #eco difference as a binary variable
 featured_data <- mutate(data, is_sustainable = eco_difference>0)
-featured_data
+head(featured_data)
 
 #a country with a positive eco_difference is sustainable because they used less resources than their country can provide
 
@@ -124,10 +125,8 @@ ggplot(featured_data, mapping = aes(x=is_sustainable)) + geom_bar() + labs(title
 ```{r}
 #sdgi, life expectancy, per capita gdp, population - features not directly associated with footprint and sustainability
 
-other_and_sustainable_data = select(featured_data, "country", "sdgi", "life_expectancy", "per_capita_gdp", "population", "is_sustainable")
+other_and_sustainable_data = select(featured_data, "country", "sdgi", "hdi", "life_expectancy", "per_capita_gdp", "population_millions", "eco_difference", "is_sustainable")
 other_and_sustainable_data = filter(other_and_sustainable_data, !is.na(is_sustainable))
-
-# IMPORTANT: CONVERT GDP AND POPULATION TO NUMERICAL DATA
 
 other_and_sustainable_data
 ```
@@ -139,10 +138,29 @@ EDA and Plotting of these Features
 ```{r}
 #repeat of previous graph
 #chart of number of self sustainable countries
-ggplot(featured_data, mapping = aes(x=is_sustainable)) + geom_bar() + labs(title = "Number of Sustainable Countries", x="Is Sustainable")
+ggplot(featured_data, mapping = aes(x=is_sustainable)) + geom_bar(fill='#0081c2') + labs(title = "Number of Sustainable Countries", x="Is Sustainable")
 ```
 
 ```{r}
 #look at console for summary of data
 summary(other_and_sustainable_data)
+```
+
+```{r}
+#the max for eco difference is 84 and I want to know which country that is
+arrange(other_and_sustainable_data, desc(eco_difference))
+
+#follow up: why do French Guinana, Suriname, and Guyana (all next to each other) have such a positive eco difference
+```
+
+```{r}
+#plotting population vs. eco difference, not using the binary variable here because it makes the graphing much more confusing
+
+ggplot(other_and_sustainable_data, mapping=aes(x=population_millions, y=eco_difference, color=population_millions)) + geom_point() + scale_x_log10(breaks=c(1e-01, 1e+00, 1e+01, 1e+02, 1e+03), labels=c("0.1", "1", "10", "100", "1000")) + ylim(-20, 20) + labs(title="Population vs. Eco Difference", x="Population (in millions, on a log scale)", y="Ecological Difference")
+
+#the y limit does eliminate the guyana, suriname, and french guinana outliers
+#note-population_millions is on a log scale
+
+#there isn't an obvious trend between population and eco_difference
+#however, it might become more clear in the model when using the binary target variable
 ```
