@@ -134,10 +134,13 @@ ggplot(data = clean_data, aes(x = per_capita_gdp, y = total_biocapacity, color =
 
 ggplot(data = clean_data, aes(x = per_capita_gdp, y = ecological_deficit_or_reserve, color = hdi)) +
   geom_point() +
-  labs(title = "GDP Per Capita vs Ecological Deficit or Reserve by HDI",
-       x = "GDP Per Capita",
-       y = "Eco Deficit or Reserve") +
+  labs(title = "GDP Per Capita vs Ecological Reserve by HDI",
+       x = "GDP Per Capita ($)",
+       y = "Eco Reserve (Hectares per Person)") +
   geom_smooth(color = "red")
+
+slice_max(clean_data, ecological_deficit_or_reserve, n = 5)$ecological_deficit_or_reserve
+slice_max(clean_data, ecological_deficit_or_reserve, n = 5)$per_capita_gdp
 
 ggplot(data = clean_data, aes(x = per_capita_gdp, y = number_of_earths_required, color = hdi)) +
   geom_point() +
@@ -146,9 +149,6 @@ ggplot(data = clean_data, aes(x = per_capita_gdp, y = number_of_earths_required,
        y = "Earths Required") +
   geom_smooth(color = "red")
 
-
-## had to filter out US because its GDP is outlier
-# gdp_data <- filter(clean_data, gdp < 20000000)
 
 # Comparing GDP to Earths Required ####
 
@@ -198,7 +198,15 @@ ggplot(data = group4, aes(x = gdp, y = number_of_earths_required, color = sd_gi)
        y = "Number of Earths Requried")
 
 
+grouped_avg <- aggregate(grouped_data$number_of_earths_required, list(grouped_data$group), FUN = mean) 
 
+ggplot(data = grouped_avg, aes(x = Group.1, y = x)) +
+  geom_bar(stat = "identity", fill = "blue") +
+  labs(title = "Number of Earths Required by Group", x = "Group", y = "Earths Required")
+
+
+## had to filter out US because its GDP is outlier
+# gdp_data <- filter(clean_data, gdp < 20000000)
 
 ggplot(data = gdp_data, aes(x = gdp, y = number_of_earths_required, color = hdi)) +
   geom_point() +
@@ -206,3 +214,12 @@ ggplot(data = gdp_data, aes(x = gdp, y = number_of_earths_required, color = hdi)
        x = "GDP",
        y = "Earths Required") +
   geom_smooth(color = "red")
+
+#####
+
+ggplot(data = clean_data, aes(x = sd_gi, y = total_ecological_footprint_consumption)) +
+  geom_point() +
+  labs(title = "SDG Index vs Total Ecological Footprint Consumption",
+       x = "SDG index", y = "Total Ecological Footprint Consumption (hectares per person)")
+
+str(clean_data)
