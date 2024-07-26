@@ -211,3 +211,9 @@ temp_df <- data.frame(Feature = features, Value = is_sus)
 ggplot(temp_df, mapping=aes(x=Feature, y=Value)) + geom_point() + ylim(-1, 1) + labs(title="Correlation of Different Features with Self Sustainability", x="Feature", y="Correlation") +theme(axis.text.x = element_text(angle = 45, hjust = 1)) +geom_hline(yintercept=0, linetype="dashed")
 #line in the middle to represent no correlation
 ```
+
+```{r}
+
+#variation
+var(cor_data) #uses cor_data bc var can't take nulls
+```
