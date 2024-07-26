@@ -29,8 +29,7 @@ names(data)
 summary(data)
 
 
-#Groups countries based on sustainability 
-#Num_countries_required = ecological_deficit_or_reserve
+#Groups countries based on two different definitions of sustainability 
 data <- mutate(data, category = case_when(num_countries_required < 1 & num_earths_required > 1 ~ "1",
                                   num_countries_required < 1 & num_earths_required < 1 ~ "2", 
                                   num_countries_required > 1 & num_earths_required > 1 ~ "3",
@@ -147,6 +146,14 @@ ggplot(data, aes(x = category, y = carbon_footprint))+
   labs(title = "Carbon Footprint by Category", 
        x = "Category",
        y = "Carbon Land Footprint")
+
+carbon_df <- select(data, category, carbon_footprint)
+print(carbon_df)
+anova_result_carbon <- aov(carbon_footprint ~ category, data = carbon_df, na.action = na.exclude)
+summary(anova_result_carbon)
+
+ScheffeTest(anova_result_biocapacity)
+#2-1,3-1,4-1
 
 #cropland, grazing, carbon*
 
