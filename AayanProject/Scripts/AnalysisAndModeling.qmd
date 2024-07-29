@@ -1,0 +1,33 @@
+```{r}
+#load in packages
+library(dplyr)
+library(janitor)
+library(ggplot2)
+library(tidyr)
+library(Hmisc)
+library(stringr)
+```
+
+Load in Data
+
+```{r}
+#load in data
+data <- readRDS("AayanProject/ecoData.rds")
+
+data
+```
+
+Null Work
+
+```{r}
+#getting a list of indexes that have more than 3 nulls
+to_drop = numeric(0)
+for (i in 1:length(data$country)){
+  if (sum(is.na(data[i,])) >=3){
+    to_drop <- c(to_drop, i)
+  }
+}
+
+data <- data[-to_drop, ]
+data
+```
