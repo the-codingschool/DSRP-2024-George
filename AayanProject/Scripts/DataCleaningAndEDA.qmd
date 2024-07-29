@@ -1,0 +1,218 @@
+Data Cleaning
+
+```{r setup}
+
+#loading in packages
+library(dplyr)
+library(janitor)
+library(ggplot2)
+library(tidyr)
+library(Hmisc)
+library(stringr)
+```
+
+Link to Dataset: <https://www.kaggle.com/datasets/jainaru/global-ecological-footprint-2023>
+
+-   The Kaggle view is very helpful and easy to read
+
+```{r}
+
+#loading in the dataset
+fileName = list.files("data")
+data <- read.csv(paste0("data/",fileName))
+
+#looking at part of the data
+data
+```
+
+```{r}
+
+#clean names
+data <- clean_names(data, case="snake")
+
+
+data <- rename(data, 
+life_expectancy = life_exectancy, #spell expectancy correctly
+sdgi = sd_gi, #get rid of the underscore
+bu_land_footprint = built_up_land, #differentiate and shorthand the "built up lands"
+bu_land_biocap = built_up_land_1, 
+eco_difference = ecological_deficit_or_reserve, 
+total_footprint = total_ecological_footprint_consumption, 
+num_earth = number_of_earths_required, 
+num_countries = number_of_countries_required)
+#the last 4 just make them easier to work with
+```
+
+```{r}
+#filling in empty strings as nulls
+data[data == ""] <- NA
+data[data == " "] <- NA
+
+#making population numeric data
+data$population_millions <- gsub(",", "", data$population_millions)
+data = mutate(data, population_millions = as.numeric(population_millions))
+
+#making gdp numeric
+data$per_capita_gdp <- gsub(",", "", data$per_capita_gdp)
+data$per_capita_gdp <- gsub("\\$", "", data$per_capita_gdp)
+data = mutate(data, per_capita_gdp = as.numeric(per_capita_gdp))
+
+
+head(data)
+```
+
+No need to remove_empty since there are no entry points
+
+```{r}
+
+#dimensions of data
+cat("The Dimensions are:",nrow(data), "x", ncol(data))
+```
+
+```{r}
+
+#pandas .info()
+str(data) #look at console
+```
+
+EDA on the footprint features
+
+```{r}
+
+#select the features ending with "footprint"
+footprint_features <- select(data, "country", contains("footprint"))
+print(footprint_features)
+summary(footprint_features) #look at the console for this one
+#total eco footprint is the sum of the other "footprints"
+```
+
+Countries vs. Their More Composite Features
+
+```{r}
+#country versus its total eco footprint
+select(data, "country", "total_footprint")
+```
+
+```{r}
+
+#country versus its eco difference
+select(data, "country", "eco_difference")
+```
+
+```{r}
+
+#HDI vs. eco difference
+select(data, "country", "hdi", "eco_difference")
+```
+
+Making New Features
+
+-   thanks Stephen for the idea of using the combo of eco deficit and num earth (idk if imma do this)
+
+```{r}
+
+#eco difference as a binary variable
+featured_data <- mutate(data, is_sustainable = eco_difference>0)
+head(featured_data)
+
+#a country with a positive eco_difference is sustainable because they used less resources than their country can provide
+
+#plot the count of each
+ggplot(featured_data, mapping = aes(x=is_sustainable)) + geom_bar() + labs(title = "Number of Sustainable Countries", x="Is Sustainable")
+```
+
+```{r}
+#region (needs to be factorized), sdgi, hdi, life expectancy, per capita gdp, population - features not directly associated with footprint and sustainability
+
+other_and_sustainable_data = select(featured_data, "country", "region", "sdgi", "hdi", "life_expectancy", "per_capita_gdp", "population_millions", "eco_difference", "is_sustainable")
+other_and_sustainable_data = filter(other_and_sustainable_data, !is.na(is_sustainable))
+
+#factorize region, make it numeric later
+other_and_sustainable_data$region <- factor(other_and_sustainable_data$region)
+
+other_and_sustainable_data
+```
+
+Possible Research Question: Do \[these\] factors correlate on whether a country is self sustainable, and if they do, how do they correlate?
+
+EDA and Plotting of these Features
+
+```{r}
+#repeat of previous graph
+#chart of number of self sustainable countries
+ggplot(featured_data, mapping = aes(x=is_sustainable)) + geom_bar(fill='#0081c2') + labs(title = "Number of Sustainable Countries", x="Is Sustainable")
+```
+
+```{r}
+#look at console for summary of data
+summary(other_and_sustainable_data)
+```
+
+```{r}
+#the max for eco difference is 84 and I want to know which country that is
+arrange(other_and_sustainable_data, desc(eco_difference))
+
+#follow up: why do French Guinana, Suriname, and Guyana (all next to each other) have such a positive eco difference
+```
+
+```{r}
+#plotting population vs. eco difference, not using the binary variable here because it makes the graphing much more confusing
+
+ggplot(other_and_sustainable_data, mapping=aes(x=population_millions, y=eco_difference, color=population_millions)) + geom_point() + scale_x_log10(breaks=c(1e-01, 1e+00, 1e+01, 1e+02, 1e+03), labels=c("0.1", "1", "10", "100", "1000")) + ylim(-15, 15) + labs(title="Population vs. Eco Difference", x="Population (in millions, on a log scale)", y="Ecological Difference") + geom_hline(yintercept=0, linetype="dashed")
+
+#the y limit does eliminate the guyana, suriname, and french guinana outliers
+#note-population_millions is on a log scale
+
+#there isn't an obvious trend between population and eco_difference
+#however, it might become more clear in the model when using the binary target variable
+```
+
+```{r}
+#sdgi vs. eco diff
+ggplot(other_and_sustainable_data, mapping=aes(x=sdgi, y=eco_difference, color=region)) + geom_point() + ylim(-15, 15) + labs(title="SDGI vs. Ecological Difference", x="SDGI", y="Eco Difference") + geom_hline(yintercept=0, linetype="dashed")
+
+#hdi vs. eco diff
+ggplot(other_and_sustainable_data, mapping=aes(x=hdi, y=eco_difference, color=region)) + geom_point() + ylim(-15, 15) + labs(title="HDI vs. Ecological Difference", x="HDI", y="Eco Difference") + geom_hline(yintercept=0, linetype="dashed")
+
+#life_expectancy vs. eco diff
+ggplot(other_and_sustainable_data, mapping=aes(x=life_expectancy, y=eco_difference, color=region)) + geom_point() + ylim(-15, 15) + labs(title="Life Expectancy vs. Ecological Difference", x="Life Expectancy", y="Eco Difference") + geom_hline(yintercept=0, linetype="dashed")
+```
+
+```{r}
+#gdp vs. eco diff
+ggplot(other_and_sustainable_data, mapping=aes(x=per_capita_gdp, y=eco_difference, color=region)) + geom_point() + ylim(-15, 15) + labs(title="GDP Per Capita vs. Ecological Difference", x="GDP Per Capita ($)", y="Eco Difference") + scale_x_log10(breaks=c(1e+03, 1e+04, 1e+05), labels=c("1000", "10,000", "100,000")) + geom_hline(yintercept=0, linetype="dashed")
+```
+
+Looking at Correlation and Variance
+
+```{r}
+#drop the non-numeric columns (region will be numeric at some point)
+cor_data<-select(other_and_sustainable_data, !c("country", "region"))
+
+#fill nulls with the median
+cor_data <- cor_data %>% mutate(across(everything(), ~ replace_na(., median(., na.rm = TRUE))))
+
+#get the correlation matrix
+cor_matrix <- cor(cor_data)
+
+#extract just the correlation with is_sustainable
+is_sus <- cor_matrix["is_sustainable",1:6] #6 will need to be 7 when region is added
+
+#plot the is_sustainable correlations
+
+#make a vector of feature names to make the graph construction easier
+features = c("SDGI", "HDI", "Life Expectancy", "Per Capita GDP ($)", "Population (millions)", "Ecological Difference") #will need to slot in region when it is numeric
+
+#convert the vector into a df
+temp_df <- data.frame(Feature = features, Value = is_sus)
+
+#plot the correlations on a scale of -1 to 1
+ggplot(temp_df, mapping=aes(x=Feature, y=Value)) + geom_point() + ylim(-1, 1) + labs(title="Correlation of Different Features with Self Sustainability", x="Feature", y="Correlation") +theme(axis.text.x = element_text(angle = 45, hjust = 1)) +geom_hline(yintercept=0, linetype="dashed")
+#line in the middle to represent no correlation
+```
+
+```{r}
+
+#variation
+var(cor_data) #uses cor_data bc var can't take nulls
+```
