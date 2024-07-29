@@ -29,5 +29,22 @@ for (i in 1:length(data$country)){
 }
 
 data <- data[-to_drop, ]
+```
+
+```{r}
+#imputing other nulls with the median or mean
+data <- mutate(data, across(c("sdgi", "hdi"), ~ replace_na(., mean(., na.rm = TRUE)))) #mean for these because there aren't major outliers
+
+data <- mutate(data, across(c("life_expectancy", "per_capita_gdp", "population_millions"), ~ replace_na(., median(., na.rm = TRUE)))) #life expec is an int so mean doesn't make sense; the other two have some major outliers which skew the mean
+
+#none of the outliers are major enough to drop them, but they don't make sense for the mean
+
+print(sum(is.na(data))) #should be 0 if everything is done correctly
+```
+
+```{r}
+#dropping things with EXTREME eco_differences (arbitrary definition of extreme)
+
+data <- filter(data, !(abs(eco_difference) > 30))
 data
 ```
