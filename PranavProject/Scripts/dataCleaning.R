@@ -223,3 +223,9 @@ ggplot(data = clean_data, aes(x = sd_gi, y = total_ecological_footprint_consumpt
        x = "SDG index", y = "Total Ecological Footprint Consumption (hectares per person)")
 
 str(clean_data)
+
+median(clean_data$hdi, na.rm = TRUE)
+
+high_hdi <- subset(clean_data, hdi >= 0.73)
+low_hdi <- subset(clean_data, hdi < 0.73)
+
