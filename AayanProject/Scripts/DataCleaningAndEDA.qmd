@@ -216,3 +216,11 @@ ggplot(temp_df, mapping=aes(x=Feature, y=Value)) + geom_point() + ylim(-1, 1) + 
 #variation
 var(cor_data) #uses cor_data bc var can't take nulls
 ```
+
+Saving the Data For Other Scripts
+
+```{r}
+#save that data as an R object
+#saveRDS(other_and_sustainable_data, file="AayanProject/ecoData.rds")
+#commented because it has already been saved
+```
