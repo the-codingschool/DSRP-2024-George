@@ -57,13 +57,7 @@ head(data)
 
 ANOVA Test
 
-```{r}
-
-#bin the vars first, then do the anova test
-#anova_test <- aov(data = data, eco_difference ~ binned_var)
-#summary(anova_test)
-#TukeyHSD(anova_test)
-```
+-   Null Hypothesis - There is no difference in the means of eco_difference in each of the bins
 
 ```{r}
 #binning variables in order to run some anova tests
@@ -107,10 +101,12 @@ head(binned_lifeExpec_data)
 ```
 
 ```{r}
+#a boxplot of eco difference by life expectancy
 boxplot(eco_difference ~ lifeExpec_bin, data = binned_lifeExpec_data, main = "Eco Difference by Life Expectancy", xlab="Life Expectancy", ylab="Eco Difference")
 ```
 
 ```{r}
+#life expectancy anova test
 anova_test <- aov(eco_difference ~ lifeExpec_bin, data = binned_lifeExpec_data)
 summary(anova_test)
 tukey_result <- TukeyHSD(anova_test)
@@ -119,8 +115,8 @@ print(tukey_result)
 
 Conclusion From These Anova Tests
 
--   SDGI did not have significant differences between each group
+-   SDGI did not have significant differences between each group (p-val 0.2)
 
--   Life Expectancy had very significant differences between each group
+-   Life Expectancy had very significant differences between each group (p-val 0.00000425)
 
-When modeling, make sure to standardize data
+When modeling (logistic regression), make sure to standardize data
