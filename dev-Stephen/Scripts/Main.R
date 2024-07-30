@@ -258,11 +258,10 @@ figure <- ggarrange(cat1_pie, cat2_pie, cat3_pie, cat4_pie, income_bar,
                     ncol = 2, nrow = 3)
 figure
 
-fisher.test(contingency_table, workspace = 2e9)
 
 contingency_table <- table(data$category, data$income_group)
 contingency_table
-fisher_test <- fisher.test(contingency_table, workspace = 2e8)
+fisher_test <- fisher.test(contingency_table, simulate.p.value = TRUE)
 fisher_test
 
 
