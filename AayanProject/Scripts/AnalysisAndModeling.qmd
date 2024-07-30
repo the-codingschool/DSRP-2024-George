@@ -17,7 +17,7 @@ data <- readRDS("AayanProject/ecoData.rds")
 data
 ```
 
-Null Work
+Null Work and Other Data Prep
 
 ```{r}
 #getting a list of indexes that have more than 3 nulls
@@ -48,3 +48,79 @@ print(sum(is.na(data))) #should be 0 if everything is done correctly
 data <- filter(data, !(abs(eco_difference) > 30))
 data
 ```
+
+```{r}
+#making the region factors into ints
+data <- mutate(data, region = as.integer(region))
+head(data)
+```
+
+ANOVA Test
+
+```{r}
+
+#bin the vars first, then do the anova test
+#anova_test <- aov(data = data, eco_difference ~ binned_var)
+#summary(anova_test)
+#TukeyHSD(anova_test)
+```
+
+```{r}
+#binning variables in order to run some anova tests
+#I am going to run an anova test on life expectancy and sdgi since those had higher correlation with eco_difference
+
+#they are going to be split by quartiles
+sdgiQuartiles <- quantile(data$sdgi, probs = c(0, 0.25, 0.5, 0.75, 1))
+
+#binning
+binned_sdgi_data<-mutate(data, sdgi_bin = cut(sdgi,
+                            breaks=sdgiQuartiles,
+                            include.lower=TRUE,
+                            labels=c("L", "ML", "MH", "H")))
+#L - low, ML - med low, MH - med high, H - high
+binned_sdgi_data
+```
+
+```{r}
+#SDGI boxplot before anova test
+boxplot(eco_difference ~ sdgi_bin, data = binned_sdgi_data, main = "Eco Difference by SDGI", xlab="SDGI", ylab="Eco Difference")
+```
+
+```{r}
+#SDGI anova test
+anova_test <- aov(eco_difference ~ sdgi_bin, data = binned_sdgi_data)
+summary(anova_test)
+tukey_result <- TukeyHSD(anova_test)
+print(tukey_result)
+```
+
+```{r}
+#split by quartiles
+lifeExpecQuartiles <- quantile(data$life_expectancy, probs = c(0, 0.25, 0.5, 0.75, 1))
+
+#binning
+binned_lifeExpec_data <- mutate(data, lifeExpec_bin = cut(life_expectancy,
+                            breaks=lifeExpecQuartiles,
+                            include.lower=TRUE,
+                            labels=c("L", "ML", "MH", "H")))
+head(binned_lifeExpec_data)
+```
+
+```{r}
+boxplot(eco_difference ~ lifeExpec_bin, data = binned_lifeExpec_data, main = "Eco Difference by Life Expectancy", xlab="Life Expectancy", ylab="Eco Difference")
+```
+
+```{r}
+anova_test <- aov(eco_difference ~ lifeExpec_bin, data = binned_lifeExpec_data)
+summary(anova_test)
+tukey_result <- TukeyHSD(anova_test)
+print(tukey_result)
+```
+
+Conclusion From These Anova Tests
+
+-   SDGI did not have significant differences between each group
+
+-   Life Expectancy had very significant differences between each group
+
+When modeling, make sure to standardize data
