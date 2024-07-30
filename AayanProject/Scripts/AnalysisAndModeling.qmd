@@ -119,4 +119,16 @@ Conclusion From These Anova Tests
 
 -   Life Expectancy had very significant differences between each group (p-val 0.00000425)
 
-When modeling (logistic regression), make sure to standardize data
+Modeling (Logistic Regression)
+
+```{r}
+#standardizing the data
+data_standardized <- as.data.frame(scale(data[-ncol(data)][, sapply(data, is.numeric)])) #standardize everything but the target
+
+#dropping eco_difference because it will not be used in modeling
+data_standardized <- data_standardized[-ncol(data_standardized)]
+
+#adding back the target
+data_standardized <- mutate(data_standardized, is_sustainable = data$is_sustainable)
+data_standardized
+```
