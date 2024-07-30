@@ -229,3 +229,7 @@ median(clean_data$hdi, na.rm = TRUE)
 high_hdi <- subset(clean_data, hdi >= 0.73)
 low_hdi <- subset(clean_data, hdi < 0.73)
 
+
+saveRDS(clean_data, "clean_data.rds")
+
+?saveRDS
