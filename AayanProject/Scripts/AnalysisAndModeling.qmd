@@ -185,6 +185,8 @@ Odds Ratios: ex. For each unit increase of life expectancy, the odds of a countr
 
 -   0.61 is the odd ratio of life_expectancy
 
+--------------------------------------------
+
 Plotting the Coefficients and Odd Ratios
 
 ```{r}
