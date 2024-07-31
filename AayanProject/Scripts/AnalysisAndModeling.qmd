@@ -123,12 +123,13 @@ Modeling (Logistic Regression)
 
 ```{r}
 #standardizing the data
-data_standardized <- as.data.frame(scale(data[-ncol(data)][, sapply(data, is.numeric)])) #standardize everything but the target
+temp_data <- data[-1] #drop region from the standardization
+data_standardized <- as.data.frame(scale(temp_data[-ncol(data)][, sapply(data, is.numeric)])) #standardize everything but the target
 
 #dropping eco_difference because it will not be used in modeling
 data_standardized <- data_standardized[-ncol(data_standardized)]
 
-#adding back the target
-data_standardized <- mutate(data_standardized, is_sustainable = data$is_sustainable)
+#adding back region and the target
+data_standardized <- mutate(data_standardized, region = data$region, is_sustainable = data$is_sustainable)
 data_standardized
 ```
