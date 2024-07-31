@@ -6,6 +6,7 @@ library(ggplot2)
 library(tidyr)
 library(Hmisc)
 library(stringr)
+library(caTools)
 ```
 
 Load in Data
@@ -119,7 +120,7 @@ Conclusion From These Anova Tests
 
 -   Life Expectancy had very significant differences between each group (p-val 0.00000425)
 
-Modeling (Logistic Regression)
+Modeling (Logistic Regression) - and then looking an coefficients
 
 ```{r}
 #standardizing the data
@@ -132,4 +133,67 @@ data_standardized <- data_standardized[-ncol(data_standardized)]
 #adding back region and the target
 data_standardized <- mutate(data_standardized, region = data$region, is_sustainable = data$is_sustainable)
 data_standardized
+```
+
+```{r}
+#splitting the data
+# split <- sample.split(data_standardized$is_sustainable, SplitRatio = 0.8)
+# train_data <- subset(data_standardized, split == TRUE)
+# test_data <- subset(data_standardized, split == FALSE)
+```
+
+```{r}
+#fitting the model (logistic regression)
+model <- glm(is_sustainable ~ sdgi + hdi +life_expectancy + per_capita_gdp + population_millions, data = data_standardized, family=binomial)
+```
+
+```{r}
+summary(model)
+```
+
+```{r}
+#Model Evaluation
+
+#preds on test data
+predictions <- predict(model, type = "response")
+
+# Create a confusion matrix
+threshold <- 0.5
+predicted_classes <- ifelse(predictions > threshold, 1, 0)
+table(predicted_classes, data_standardized$is_sustainable)
+
+# Calculate accuracy
+accuracy <- mean(predicted_classes == data_standardized$is_sustainable)
+accuracy
+```
+
+```{r}
+#feature importance/coefficients of the model
+
+# Extract coefficients
+coefficients <- coef(model)
+print("Coefficients:")
+print(coefficients)
+
+# Exponentiate coefficients to get odds ratios
+odds_ratios <- exp(coefficients)
+print("Odds Ratios:")
+print(odds_ratios)
+```
+
+Odds Ratios: ex. For each unit increase of life expectancy, the odds of a country being self sustainable decrease by 39% (1 - 0.61).
+
+-   0.61 is the odd ratio of life_expectancy
+
+Plotting the Coefficients and Odd Ratios
+
+```{r}
+#a vector of the names that correlate with the coefficients
+names <- c("SDGI", "HDI", "Life Expectancy", "Per Capita GDP", "Population Millions")
+feature_coefs <- coefficients[-1] #dropping the intercept value
+#dataframe for the plot
+plot_df <- data.frame(Features = names, coefs=feature_coefs)
+
+#the plot of coefficients
+ggplot(plot_df, mapping=aes(Features, coefs)) + geom_point() + ylim(-1,1) + geom_hline(yintercept=0, linetype="dashed") + labs(title="The Coefficients of the Features in the Logistic Regression Model", x="Features", y="Coefficients")
 ```
