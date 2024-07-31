@@ -206,7 +206,7 @@ ggplot(data = grouped_avg, aes(x = Group.1, y = x)) +
 
 
 ## had to filter out US because its GDP is outlier
-# gdp_data <- filter(clean_data, gdp < 20000000)
+gdp_data <- filter(clean_data, gdp < 20000000)
 
 ggplot(data = gdp_data, aes(x = gdp, y = number_of_earths_required, color = hdi)) +
   geom_point() +
