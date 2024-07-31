@@ -208,10 +208,10 @@ conf_int <- exp(confint(model))
 
 # Combine into a data frame for plotting
 or_plot_df <- data.frame(
-  term = names(odds_ratios),
-  estimate = odds_ratios,
-  conf.low = conf_int[, 1],
-  conf.high = conf_int[, 2]
+  term = names,
+  estimate = odds_ratios[-1],
+  conf.low = conf_int[, 1][-1],
+  conf.high = conf_int[, 2][-1]
 )
 
 # Plot odds ratios using ggplot2
@@ -224,7 +224,15 @@ ggplot(or_plot_df, aes(x = term, y = estimate)) +
   theme_minimal() +
   labs(
     title = "Odds Ratios with 95% Confidence Intervals",
-    x = "Predictor",
+    x = "Feature",
     y = "Odds Ratio (log scale)"
   )
 ```
+
+Conclusions From The Model
+
+-   Life Expectancy is a big predictor of a country's self-sustainability
+
+-   Despite having low correlation with self sustainability, population does seem to significigantly hurt a country's self-sustainability
+
+-   There are a couple of features that seem to positively correlate with self-sustainability (not shown by correlation), however the correlation is quite weak
