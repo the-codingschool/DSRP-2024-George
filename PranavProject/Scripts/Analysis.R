@@ -1,5 +1,13 @@
-data <- readRDS("clean_data.rds")
-data
+library(caTools)
+library(readr)
+library(ggplot2)
+library(downloader)
+library(caTools)
+library(FNN)
+library(readxl)
+
+clean_data <- readRDS("clean_data.rds")
+clean_data
 
 
 median(clean_data$hdi, na.rm = TRUE)
@@ -48,6 +56,46 @@ hist(reserve_aov$residuals)
 summary(reserve_aov)
 TukeyHSD(reserve_aov)
 
-## do linear regression between gdp per capita and earths required
 
+## do linear regression between gdp per capita, hdi, and earths required
+lr_split <- sample.split(clean_data$number_of_earths_required, SplitRatio = 0.8)
+lr_train_data <- subset(clean_data, lr_split == TRUE)
+lr_test_data <- subset(clean_data, lr_split == FALSE)
+
+lr_model <- lm(number_of_earths_required ~ hdi + per_capita_gdp, data = lr_train_data)
+
+lr_pred <- predict(lr_model, newdata = lr_test_data)
+
+
+ggplot(data = lr_test_data, aes(x = number_of_earths_required, y = pred)) +
+  geom_point() +
+  geom_abline(slope = 1, intercept = 0, linetype = "solid", color = "red", lwd = 1) +
+  labs(title = "Real vs Predicted Values",
+       x = "True Progression",
+       y = "Predicted Progression")
+
+lr_mse <- mean((lr_test_data$number_of_earths_required - lr_pred)^2, na.rm = TRUE)
+lr_r2 <- summary(lr_model)$r.squared
+
+lr_mse
+lr_r2
+
+str(clean_data)
+
+
+knn_data <- clean_data[, c('income_group', 'ecological_deficit_or_reserve', 'number_of_earths_required')]
+
+knn_data <- na.omit(knn_data)
+
+
+## knn model that predicts the class through the earths required and ecological reserve
+
+knn_split <- sample.split(knn_data$income_group, SplitRatio = 0.8)
+knn_train_data <- subset(knn_data, knn_split == TRUE)
+knn_test_data <- subset(knn_data, knn_split == FALSE)
+
+
+knn_model <- knn(train <- knn_train_data[, c('number_of_earths_required', 'ecological_deficit_or_reserve')],
+                 test <- knn_test_data[, c('number_of_earths_required', 'ecological_deficit_or_reserve')],
+                 cl = knn_train_data$income_group)
 
