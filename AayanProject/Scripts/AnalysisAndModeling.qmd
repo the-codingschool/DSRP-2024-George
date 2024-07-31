@@ -194,8 +194,37 @@ Plotting the Coefficients and Odd Ratios
 names <- c("SDGI", "HDI", "Life Expectancy", "Per Capita GDP", "Population Millions")
 feature_coefs <- coefficients[-1] #dropping the intercept value
 #dataframe for the plot
-plot_df <- data.frame(Features = names, coefs=feature_coefs)
+coef_plot_df <- data.frame(Features = names, coefs=feature_coefs)
 
 #the plot of coefficients
-ggplot(plot_df, mapping=aes(Features, coefs)) + geom_point() + ylim(-1,1) + geom_hline(yintercept=0, linetype="dashed") + labs(title="The Coefficients of the Features in the Logistic Regression Model", x="Features", y="Coefficients")
+ggplot(coef_plot_df, mapping=aes(Features, coefs)) + geom_point() + ylim(-1,1) + geom_hline(yintercept=0, linetype="dashed") + labs(title="The Coefficients of the Features in the Logistic Regression Model", x="Features", y="Coefficients")
+```
+
+```{r}
+#the plot of the odd ratios
+
+# Calculate confidence intervals for odds ratios
+conf_int <- exp(confint(model))
+
+# Combine into a data frame for plotting
+or_plot_df <- data.frame(
+  term = names(odds_ratios),
+  estimate = odds_ratios,
+  conf.low = conf_int[, 1],
+  conf.high = conf_int[, 2]
+)
+
+# Plot odds ratios using ggplot2
+ggplot(or_plot_df, aes(x = term, y = estimate)) +
+  geom_point() +
+  geom_errorbar(aes(ymin = conf.low, ymax = conf.high), width = 0.2) +
+  geom_hline(yintercept = 1, linetype = "dashed") +
+  scale_y_log10() +
+  coord_flip() +
+  theme_minimal() +
+  labs(
+    title = "Odds Ratios with 95% Confidence Intervals",
+    x = "Predictor",
+    y = "Odds Ratio (log scale)"
+  )
 ```
