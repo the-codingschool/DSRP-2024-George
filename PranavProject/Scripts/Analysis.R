@@ -112,3 +112,5 @@ actual
 pred
 
 cm
+sum(diag(cm)) / sum(cm)
+
