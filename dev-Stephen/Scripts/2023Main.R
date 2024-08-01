@@ -7,9 +7,9 @@ library(janitor)
 library(stringr)
 
 #Reading in data, cleaning names, and data summary
-data <- read.csv("data/Global Ecological Footprint 2023.csv")
+data23 <- read.csv("data/Global Ecological Footprint 2023.csv")
 
-data = as.data.frame(data) |> 
+data23 <- as.data.frame(data23) |> 
   clean_names(case = "snake") |>
   rename(builtup_land_footprint = built_up_land,
          total_consumption_footprint = total_ecological_footprint_consumption,
@@ -20,78 +20,78 @@ data = as.data.frame(data) |>
          ) |>
   rename_with(~ str_replace(.x, "land", "capacity"), ends_with("land"), ) |>
   rename_with(~ str_replace(.x, "^number_of", "num"), starts_with("number_of")) 
-data$per_capita_gdp <- gsub(",", "", data$per_capita_gdp)
-data$per_capita_gdp <- gsub("\\$", "", data$per_capita_gdp)
-data <- mutate(data, per_capita_gdp = as.numeric(per_capita_gdp))
+data23$per_capita_gdp <- gsub(",", "", data23$per_capita_gdp)
+data23$per_capita_gdp <- gsub("\\$", "", data23$per_capita_gdp)
+data23 <- mutate(data23, per_capita_gdp = as.numeric(per_capita_gdp))
 
 #Groups countries based on different groups of sustainability 
-data <- mutate(data, category = case_when(num_countries_required <= 1 & num_earths_required > 1 ~ "1",
+data23 <- mutate(data23, category = case_when(num_countries_required <= 1 & num_earths_required > 1 ~ "1",
                                   num_countries_required <= 1 & num_earths_required <= 1 ~ "2", 
                                   num_countries_required > 1 & num_earths_required > 1 ~ "3",
                                   num_countries_required > 1 & num_earths_required <= 1 ~ "4"))
 
-data
+data23
 
-ggplot(data, aes(x = category, y = num_countries_required)) + 
+ggplot(data23, aes(x = category, y = num_countries_required)) + 
   geom_boxplot()+
   ylim(0, 20) +
   labs(title = "Number of Countries Required by Category", 
        x = "Category",
        y = "Number of Countries")
 
-num_countries_df <- select(data, category, num_countries_required)
+num_countries_df <- select(data23, category, num_countries_required)
 anova_result_countries <- aov(num_countries_required ~ category, data = num_countries_df, na.action = na.exclude)
 summary(anova_result_countries)
 
 ScheffeTest(anova_result_countries)
 #3-1, 3-2
 
-ggplot(data, aes(x = category, y = num_earths_required)) + 
+ggplot(data23, aes(x = category, y = num_earths_required)) + 
   geom_boxplot()+
   labs(title = "Number of Earths Required by Category", 
        x = "Category",
        y = "Number of Countries")
 
-num_earth_df <- select(data, category, num_earths_required)
+num_earth_df <- select(data23, category, num_earths_required)
 anova_result_earth <- aov(num_earths_required ~ category, data = num_earth_df, na.action = na.exclude)
 summary(anova_result_earth)
 
 ScheffeTest(anova_result_earth)
 #2-1, 4-1, 3-2, 4-3
 
-ggplot(data, aes(x = category, y = ecological_deficit_or_reserve)) + 
+ggplot(data23, aes(x = category, y = ecological_deficit_or_reserve)) + 
   geom_boxplot()+
   labs(title = "Ecological Deficit or Reserve by Category", 
        x = "Category",
        y = "Ecological Deficit Or Reserve")
 
-ecological_df <- select(data, category, ecological_deficit_or_reserve)
+ecological_df <- select(data23, category, ecological_deficit_or_reserve)
 anova_result_ecological <- aov(ecological_deficit_or_reserve ~ category, data = ecological_df, na.action = na.exclude)
 summary(anova_result_ecological)
 
 ScheffeTest(anova_result_ecological)
 #2-1, 3-1, 4-1
 
-ggplot(data, aes(x = category, y = total_consumption_footprint)) + 
+ggplot(data23, aes(x = category, y = total_consumption_footprint)) + 
   geom_boxplot()+
   labs(title = "Total Biocapacity Required by Category", 
        x = "Category",
        y = "Number of Countries")
 
-consumption_df <- select(data, category, total_consumption_footprint)
+consumption_df <- select(data23, category, total_consumption_footprint)
 anova_result_consumption <- aov(total_consumption_footprint ~ category, data = consumption_df, na.action = na.exclude)
 summary(anova_result_consumption)
 
 ScheffeTest(anova_result_consumption)
 #2-1, 4-1, 3-2, 4-3
 
-ggplot(data, aes(x = category, y = total_biocapacity)) + 
+ggplot(data23, aes(x = category, y = total_biocapacity)) + 
   geom_boxplot()+
   labs(title = "Total Biocapacity Required by Category", 
        x = "Category",
        y = "Number of Countries")
 
-biocapacity_df <- select(data, category, total_biocapacity)
+biocapacity_df <- select(data23, category, total_biocapacity)
 anova_result_biocapacity <- aov(total_biocapacity ~ category, data = biocapacity_df, na.action = na.exclude)
 summary(anova_result_biocapacity)
 
@@ -106,26 +106,26 @@ ScheffeTest(anova_result_biocapacity)
 #Resource usage and availability within each group. 
 
 #Cropland
-ggplot(data, aes(x = category, y = cropland_footprint))+
+ggplot(data23, aes(x = category, y = cropland_footprint))+
   geom_boxplot()+
   labs(title = "Cropland Footprint by Category", 
        x = "Category",
        y = "Cropland Footprint")
 
-crop_fp_df <- select(data, category, cropland_footprint)
+crop_fp_df <- select(data23, category, cropland_footprint)
 anova_result_crop_fp <- aov(cropland_footprint ~ category, data = crop_fp_df, na.action = na.exclude)
 summary(anova_result_crop_fp)
 
 ScheffeTest(anova_result_crop_fp)
 #2-1, 4-1, 3-2, 4-3
 
-ggplot(data, aes(x = category, y = cropland_capacity))+
+ggplot(data23, aes(x = category, y = cropland_capacity))+
   geom_boxplot()+
   labs(title = "Cropland Capacity by Category", 
        x = "Category",
        y = "Cropland Capacity")
 
-crop_cap_df <- select(data, category, cropland_capacity)
+crop_cap_df <- select(data23, category, cropland_capacity)
 anova_result_crop_cap <- aov(cropland_capacity ~ category, data = crop_cap_df, na.action = na.exclude)
 summary(anova_result_crop_cap)
 
@@ -133,27 +133,27 @@ ScheffeTest(anova_result_crop_cap)
 #2-1, 4-1
 
 #Grazing
-ggplot(data, aes(x = category, y = grazing_footprint))+
+ggplot(data23, aes(x = category, y = grazing_footprint))+
   geom_boxplot()+
   ylim(0, 2)+
   labs(title = "Grazing Footprint by Category", 
        x = "Category",
        y = "Grazing Footprint")
   
-grazing_fp_df <- select(data, category, grazing_footprint)
+grazing_fp_df <- select(data23, category, grazing_footprint)
 anova_result_grazing_fp <- aov(grazing_footprint ~ category, data = grazing_fp_df, na.action = na.exclude)
 summary(anova_result_grazing_fp)
   
 ScheffeTest(anova_result_grazing_fp)  
 #2-1, 3-1, 4-1
 
-ggplot(data, aes(x = category, y = grazing_capacity))+
+ggplot(data23, aes(x = category, y = grazing_capacity))+
   geom_boxplot()+
   labs(title = "Grazing Capacity by Category", 
        x = "Category",
        y = "Cropland Capacity")
 
-grazing_cap_df <- select(data, category, grazing_capacity)
+grazing_cap_df <- select(data23, category, grazing_capacity)
 anova_result_grazing_cap <- aov(grazing_capacity ~ category, data = grazing_cap_df, na.action = na.exclude)
 summary(anova_result_grazing_cap)
 
@@ -161,26 +161,26 @@ ScheffeTest(anova_result_grazing_cap)
 #2-1, 3-1, 4-1
 
 #Forest
-ggplot(data, aes(x = category, y = forest_footprint))+
+ggplot(data23, aes(x = category, y = forest_footprint))+
   geom_boxplot()+
   labs(title = "Forest Footprint by Category", 
        x = "Category",
        y = "Forest Footprint")
 
-forest_fp_df <- select(data, category, forest_footprint)
+forest_fp_df <- select(data23, category, forest_footprint)
 anova_result_forest_fp <- aov(forest_footprint ~ category, data = forest_fp_df, na.action = na.exclude)
 summary(anova_result_forest_fp)
 
 ScheffeTest(anova_result_forest_fp)
 #2-1, 3-1, 4-1
 
-ggplot(data, aes(x = category, y = forest_capacity))+
+ggplot(data23, aes(x = category, y = forest_capacity))+
   geom_boxplot()+
   labs(title = "Forest Production Capacity by Category", 
        x = "Category",
        y = "Forest Production Capacity")
 
-forest_cap_df <- select(data, category, forest_capacity)
+forest_cap_df <- select(data23, category, forest_capacity)
 anova_result_forest_cap <- aov(forest_capacity ~ category, data = forest_cap_df, na.action = na.exclude)
 summary(anova_result_forest_cap)
 
@@ -188,24 +188,24 @@ ScheffeTest(anova_result_forest_cap)
 #2-1, 3-1, 4-1
 
 #Fish
-ggplot(data, aes(x = category, y = fish_footprint))+
+ggplot(data23, aes(x = category, y = fish_footprint))+
   geom_boxplot()+
   labs(title = "Fish Footprint by Category", 
        x = "Category",
        y = "Fish Footprint")
 
-fish_fp_df <- select(data, category, fish_footprint)
+fish_fp_df <- select(data23, category, fish_footprint)
 anova_result_fish_fp <- aov(fish_footprint ~ category, data = fish_fp_df, na.action = na.exclude)
 summary(anova_result_fish_fp)
 #None
 
-ggplot(data, aes(x = category, y = fish_capacity))+
+ggplot(data23, aes(x = category, y = fish_capacity))+
   geom_boxplot()+
   labs(title = "Fish Capacity by Category", 
        x = "Category",
        y = "Fish Capacity")
 
-fish_cap_df <- select(data, category, fish_capacity)
+fish_cap_df <- select(data23, category, fish_capacity)
 anova_result_fish_cap <- aov(fish_capacity ~ category, data = fish_cap_df, na.action = na.exclude)
 summary(anova_result_fish_cap)
 
@@ -213,26 +213,26 @@ ScheffeTest(anova_result_fish_cap)
 #2-1, 3-1, 4-1
 
 #Built Up Land
-ggplot(data, aes(x = category, y = builtup_land_footprint))+
+ggplot(data23, aes(x = category, y = builtup_land_footprint))+
   geom_boxplot()+
   labs(title = "Built Up Land Footprint by Category", 
        x = "Category",
        y = "Built Up Land Footprint")
 
-land_fp_df <- select(data, category, builtup_land_footprint)
+land_fp_df <- select(data23, category, builtup_land_footprint)
 anova_result_land_fp <- aov(builtup_land_footprint ~ category, data = land_fp_df, na.action = na.exclude)
 summary(anova_result_land_fp)
 
 ScheffeTest(anova_result_land_fp)
 #4-3
 
-ggplot(data, aes(x = category, y = builtup_land_capacity))+
+ggplot(data23, aes(x = category, y = builtup_land_capacity))+
   geom_boxplot()+
   labs(title = "Built Up Land Capacity by Category", 
        x = "Category",
        y = "Built Up Land Capacity")
 
-land_cap_df <- select(data, category, builtup_land_capacity)
+land_cap_df <- select(data23, category, builtup_land_capacity)
 anova_result_land_cap <- aov(builtup_land_capacity ~ category, data = land_cap_df, na.action = na.exclude)
 summary(anova_result_land_cap)
 
@@ -240,13 +240,13 @@ ScheffeTest(anova_result_land_cap)
 #3-2, 4-3
 
 #Carbon
-ggplot(data, aes(x = category, y = carbon_footprint))+
+ggplot(data23, aes(x = category, y = carbon_footprint))+
   geom_boxplot()+
   labs(title = "Carbon Footprint by Category", 
        x = "Category",
        y = "Carbon Land Footprint")
 
-carbon_df <- select(data, category, carbon_footprint)
+carbon_df <- select(data23, category, carbon_footprint)
 anova_result_carbon <- aov(carbon_footprint ~ category, data = carbon_df, na.action = na.exclude)
 summary(anova_result_carbon)
 
@@ -256,10 +256,10 @@ ScheffeTest(anova_result_carbon)
 
 
 #Income in each group 
-cat1 <- filter(data, category == "1") 
-cat2 <- filter(data, category == "2")
-cat3 <- filter(data, category == "3")
-cat4 <- filter(data, category == "4")
+cat1 <- filter(data23, category == "1") 
+cat2 <- filter(data23, category == "2")
+cat3 <- filter(data23, category == "3")
+cat4 <- filter(data23, category == "4")
 
 cat1 #num_countries <1 (sustainable) and num_earth >1 (unsustainable)
 cat2 #num_countries <1 (sustainable) and num_earth <1 (sustainable)
@@ -392,12 +392,12 @@ figure
 #Category 2 (num_earth < 1) - LI, LM
 #Category 3 (num_earth < 1) - LI, LM, (few UM)
 
-contingency_table <- table(data$category, data$income_group)
+contingency_table <- table(data23$category, data23$income_group)
 
-category <- unique(na.omit(data$category))
+category <- unique(na.omit(data23$category))
 cat_comb <- combn(category, 2)
 
-income <- unique(data$income_group[data$income_group != ""])
+income <- unique(data23$income_group[data23$income_group != ""])
 income_comb <- combn(income, 2)
 
 p_values <- c()
@@ -444,20 +444,20 @@ for (i in 1:6){
 #Connection with footprints
 
 #Cropland connection with income
-ggplot(data, aes(x = income_group, y = cropland_footprint))+
+ggplot(data23, aes(x = income_group, y = cropland_footprint))+
   geom_boxplot()
 
-income_crop_fp_df <- select(data, income_group, cropland_footprint)
+income_crop_fp_df <- select(data23, income_group, cropland_footprint)
 income_crop_fp <- aov(cropland_footprint ~ income_group, data = income_crop_fp_df, na.action = na.exclude)
 summary(income_crop_fp)
 
 ScheffeTest(income_crop_fp)
 #LI-HI, LM-HI, UM-HI, UM-LI, UM-LM
 
-ggplot(data, aes(x = income_group, y = cropland_capacity))+
+ggplot(data23, aes(x = income_group, y = cropland_capacity))+
   geom_boxplot()
 
-income_crop_cap_df <- select(data, income_group, cropland_capacity)
+income_crop_cap_df <- select(data23, income_group, cropland_capacity)
 income_crop_cap <- aov(cropland_capacity ~ income_group, data = income_crop_cap_df, na.action = na.exclude)
 summary(income_crop_cap)
 
@@ -465,20 +465,20 @@ ScheffeTest(income_crop_cap)
 #LI-HI,UM-LI
 
 #Forest connection with income
-ggplot(data, aes(x = income_group, y = forest_footprint))+
+ggplot(data23, aes(x = income_group, y = forest_footprint))+
   geom_boxplot()
 
-income_forest_fp_df <- select(data, income_group, forest_footprint)
+income_forest_fp_df <- select(data23, income_group, forest_footprint)
 income_forest_fp <- aov(forest_footprint ~ income_group, data = income_forest_fp_df, na.action = na.exclude)
 summary(income_forest_fp)
 
 ScheffeTest(income_forest_fp)
 #LI-HI, LM-HI, UM-HI
 
-ggplot(data, aes(x = income_group, y = forest_capacity))+
+ggplot(data23, aes(x = income_group, y = forest_capacity))+
   geom_boxplot()
 
-income_forest_cap_df <- select(data, income_group, forest_capacity)
+income_forest_cap_df <- select(data23, income_group, forest_capacity)
 income_forest_cap <- aov(forest_capacity ~ income_group, data = income_forest_cap_df, na.action = na.exclude)
 summary(income_forest_cap)
 
@@ -486,10 +486,10 @@ ScheffeTest(income_forest_cap)
 #NA
 
 #Carbon connection with income
-ggplot(data, aes(x = income_group, y = carbon_footprint))+
+ggplot(data23, aes(x = income_group, y = carbon_footprint))+
   geom_boxplot()
 
-income_carbon_fp_df <- select(data, income_group, carbon_footprint)
+income_carbon_fp_df <- select(data23, income_group, carbon_footprint)
 income_carbon_fp <- aov(carbon_footprint ~ income_group, data = income_carbon_fp_df, na.action = na.exclude)
 summary(income_carbon_fp)
 
@@ -497,37 +497,37 @@ ScheffeTest(income_carbon_fp)
 #LI-HI, LM-HI, UM-HI, UM-LI, UM-LM
 
 #Grazing connection with income
-ggplot(data, aes(x = income_group, y = grazing_footprint))+
+ggplot(data23, aes(x = income_group, y = grazing_footprint))+
   geom_boxplot()
 
-income_grazing_fp_df <- select(data, income_group, grazing_footprint)
+income_grazing_fp_df <- select(data23, income_group, grazing_footprint)
 income_grazing_fp <- aov(grazing_footprint ~ income_group, data = income_grazing_fp_df, na.action = na.exclude)
 summary(income_grazing_fp)
 #NA
 
-ggplot(data, aes(x = income_group, y = grazing_capacity))+
+ggplot(data23, aes(x = income_group, y = grazing_capacity))+
   geom_boxplot()
 
-income_grazing_cap_df <- select(data, income_group, grazing_capacity)
+income_grazing_cap_df <- select(data23, income_group, grazing_capacity)
 income_grazing_cap <- aov(grazing_capacity ~ income_group, data = income_grazing_cap_df, na.action = na.exclude)
 summary(income_grazing_cap)
 #NA
 
 #Built Up Land connection with income
-ggplot(data, aes(x = income_group, y = builtup_land_footprint))+
+ggplot(data23, aes(x = income_group, y = builtup_land_footprint))+
   geom_boxplot()
 
-income_land_fp_df <- select(data, income_group, builtup_land_footprint)
+income_land_fp_df <- select(data23, income_group, builtup_land_footprint)
 income_land_fp<- aov(builtup_land_footprint ~ income_group, data = income_land_fp_df, na.action = na.exclude)
 summary(income_land_fp)
 
 ScheffeTest(income_land_fp)
 #LI-HI
 
-ggplot(data, aes(x = income_group, y = builtup_land_capacity))+
+ggplot(data23, aes(x = income_group, y = builtup_land_capacity))+
   geom_boxplot()
 
-income_land_cap_df <- select(data, income_group, builtup_land_capacity)
+income_land_cap_df <- select(data23, income_group, builtup_land_capacity)
 income_land_cap <- aov(builtup_land_capacity ~ income_group, data = income_land_cap_df, na.action = na.exclude)
 summary(income_land_cap)
 
@@ -535,18 +535,18 @@ ScheffeTest(income_land_cap)
 #LI-HI
 
 #Fish connection with income
-ggplot(data, aes(x = income_group, y = fish_footprint))+
+ggplot(data23, aes(x = income_group, y = fish_footprint))+
   geom_boxplot()
 
-income_fish_fp_df <- select(data, income_group, fish_footprint)
+income_fish_fp_df <- select(data23, income_group, fish_footprint)
 income_fish_fp <- aov(fish_footprint ~ income_group, data = income_fish_fp_df, na.action = na.exclude)
 summary(income_fish_fp)
 #NA
 
-ggplot(data, aes(x = income_group, y = fish_capacity))+
+ggplot(data23, aes(x = income_group, y = fish_capacity))+
   geom_boxplot()
 
-income_fish_cap_df <- select(data, income_group, fish_capacity)
+income_fish_cap_df <- select(data23, income_group, fish_capacity)
 income_fish_cap <- aov(fish_capacity ~ income_group, data = income_fish_cap_df, na.action = na.exclude)
 summary(income_fish_cap)
 
