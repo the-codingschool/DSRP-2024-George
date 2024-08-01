@@ -99,3 +99,13 @@ knn_model <- knn(train <- knn_train_data[, c('number_of_earths_required', 'ecolo
                  test <- knn_test_data[, c('number_of_earths_required', 'ecological_deficit_or_reserve')],
                  cl = knn_train_data$income_group)
 
+
+pred <- knn_model
+
+actual <- knn_data$income_group
+
+cm <- table(actual, pred)
+length(actual)
+length(pred)
+actual
+pred
