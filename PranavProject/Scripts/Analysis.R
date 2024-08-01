@@ -87,6 +87,7 @@ knn_data <- clean_data[, c('income_group', 'ecological_deficit_or_reserve', 'num
 
 knn_data <- na.omit(knn_data)
 
+nrow(knn_data)
 
 ## knn model that predicts the class through the earths required and ecological reserve
 
@@ -102,10 +103,12 @@ knn_model <- knn(train <- knn_train_data[, c('number_of_earths_required', 'ecolo
 
 pred <- knn_model
 
-actual <- knn_data$income_group
+actual <- knn_test_data$income_group
 
 cm <- table(actual, pred)
 length(actual)
 length(pred)
 actual
 pred
+
+cm
