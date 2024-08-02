@@ -1,5 +1,6 @@
 ## library(readr)
 ## library(data.table)
+
 library(dplyr)
 library(tidyr)
 library(janitor)
@@ -8,6 +9,7 @@ library(ggplot2)
 ## read in dataset
 fileName <- list.files("data")
 data <- read.csv(paste0("data/", fileName))
+
 head(data)
 
 dim(data)

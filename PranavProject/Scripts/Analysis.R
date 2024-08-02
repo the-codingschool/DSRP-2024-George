@@ -15,6 +15,8 @@ median(clean_data$hdi, na.rm = TRUE)
 high_hdi <- subset(clean_data, hdi >= 0.73)
 low_hdi <- subset(clean_data, hdi < 0.73)
 
+# change cutoff
+
 str(clean_data)
 
 ## Independent two-sample T-test
@@ -80,6 +82,8 @@ lr_r2 <- summary(lr_model)$r.squared
 lr_mse
 lr_r2
 
+## transformations for variables to make relationship linear
+
 str(clean_data)
 
 
@@ -113,4 +117,8 @@ pred
 
 cm
 sum(diag(cm)) / sum(cm)
+
+
+## anova, f test
+## different regions vs sustainability, continent
 
