@@ -1,0 +1,32 @@
+---
+title: "Untitled"
+author: "Stephen Chen"
+format: html
+editor: visual
+---
+
+## Results
+
+```{r script}
+#| include: false
+
+library(dplyr)
+library(ggplot2) 
+library(ggpubr)
+library(DescTools)
+library(janitor)
+library(stringr)
+
+readRDS("2019Main")
+readRDS("2023Main")
+readRDS("2019_2023Analysis")
+```
+
+You can add options to executable code like this
+
+```{r}
+#| echo: false
+2 * 2
+```
+
+The `echo: false` option disables the printing of code (only output is displayed).
