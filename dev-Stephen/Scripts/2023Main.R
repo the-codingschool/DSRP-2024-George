@@ -34,8 +34,7 @@ data23
 
 saveRDS(data23, "2023Main")
 
-
-ggplot(data23, aes(x = category, y = num_countries_required)) + 
+num_countries23 <- ggplot(data23, aes(x = category, y = num_countries_required)) + 
   geom_boxplot()+
   ylim(0, 20) +
   labs(title = "Number of Countries Required by Category", 
@@ -63,12 +62,12 @@ summary(anova_result_countries)
 ScheffeTest(anova_result_countries)
 #3-1, 3-2
 
-ggplot(data23, aes(x = category, y = num_earths_required)) + 
+num_earths23 <- ggplot(data23, aes(x = category, y = num_earths_required)) + 
   geom_boxplot()+
+  ylim(0, 11)+
   labs(title = "Number of Earths Required by Category", 
        x = "Category",
        y = "Number of Countries")+
-  ylim(0, 10)+
   annotate(
     "text", label = "*",
     color = "red",
@@ -105,8 +104,9 @@ summary(anova_result_earth)
 ScheffeTest(anova_result_earth)
 #2-1, 4-1, 3-2, 4-3
 
-ggplot(data23, aes(x = category, y = total_consumption_footprint)) + 
+fp23 <- ggplot(data23, aes(x = category, y = total_consumption_footprint)) + 
   geom_boxplot()+
+  ylim(0, 16)+
   labs(title = "Total Consumption Footprint by Category", 
        x = "Category",
        y = "Total Consumption Footprint")+
@@ -146,7 +146,7 @@ summary(anova_result_consumption)
 ScheffeTest(anova_result_consumption)
 #2-1, 4-1, 3-2, 4-3
 
-ggplot(data23, aes(x = category, y = total_biocapacity)) + 
+cap23 <- ggplot(data23, aes(x = category, y = total_biocapacity)) + 
   geom_boxplot()+
   labs(title = "Total Biocapacity Required by Category", 
        x = "Category",
@@ -163,14 +163,14 @@ ggplot(data23, aes(x = category, y = total_biocapacity)) +
     color = "blue",
     size = 10, 
     x = c("1", "3"), 
-    y = c(35, 15)
+    y = c(30, 15)
   )+
   annotate(
     "text", label = "*",
     color = "green",
     size = 10, 
     x = c("1", "4"), 
-    y = c(45, 15)
+    y = c(35, 15)
   )
 
 biocapacity_df <- select(data23, category, total_biocapacity)
@@ -180,8 +180,9 @@ summary(anova_result_biocapacity)
 ScheffeTest(anova_result_biocapacity)
 #2-1, 3-1, 4-1
 
-#1.5 is the cutoff between planet sustainability and unsustainability
-
+plots23 <- annotate_figure(ggarrange(num_countries23, num_earths23, fp23, cap23,
+                                     ncol = 2, nrow = 2), top = text_grob("2023"))
+plots23
 
 
 
