@@ -69,7 +69,7 @@ lr_model <- lm(number_of_earths_required ~ hdi + per_capita_gdp, data = lr_train
 lr_pred <- predict(lr_model, newdata = lr_test_data)
 
 
-ggplot(data = lr_test_data, aes(x = number_of_earths_required, y = pred)) +
+ggplot(data = lr_test_data, aes(x = number_of_earths_required, y = lr_pred)) +
   geom_point() +
   geom_abline(slope = 1, intercept = 0, linetype = "solid", color = "red", lwd = 1) +
   labs(title = "Real vs Predicted Values",
