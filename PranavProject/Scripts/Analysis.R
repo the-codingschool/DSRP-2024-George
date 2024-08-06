@@ -117,8 +117,21 @@ pred
 
 cm
 sum(diag(cm)) / sum(cm)
-
+str(clean_data)
 
 ## anova, f test
 ## different regions vs sustainability, continent
+
+region_reserve_aov <- aov(data = clean_data, ecological_deficit_or_reserve ~ region)
+hist(region_reserve_aov$residuals)
+summary(region_reserve_aov)
+TukeyHSD(region_reserve_aov)
+
+region_earths_aov <- aov(data = clean_data, number_of_earths_required ~ region)
+hist(region_earths_aov$residuals)
+summary(region_earths_aov)
+TukeyHSD(region_earths_aov)
+
+
+
 
