@@ -1,0 +1,179 @@
+---
+title: "Untitled"
+author: "Stephen Chen"
+format: html
+editor: visual
+---
+
+## Abstract
+
+## Background
+
+For the past 50 years, the Earth Overshoot Day, the date in the year that the world's ecological footprint and consumption exceeds Earth's resource capacity, has been found to be increasingly earlier in the year. Human ecological footprint and consumption has been outpacing the Earth's capacity to sustain these activity, potentially driving climate change, destroying wildlife environments and worldwide biodiversity, as well as leading to exhaustion of the necessary resources and economic instability. As such, an emphasis needs to be placed on limiting the waste and inefficiency of economic and industrial activities. In order to accomplish this however, it is necessary to study which man-made activities truly have the biggest impacts on sustainability, therefore allowing more concentrated efforts to cut down on unsustainable practices.
+
+This project highlights how different ecological footprints and resource availability change differently between sustainable vs unsustainable countries. Furthermore, it explores how changes in a country’s ecological footprints and resource availability correlated with a country’s growth in sustainability and economy by looking at changes between 2019 and 2023.
+
+## Results
+
+```{r script}
+#| include: false
+
+library(dplyr)
+library(ggplot2) 
+library(ggpubr)
+library(DescTools)
+library(janitor)
+library(stringr)
+
+data19 <- readRDS("2019Main")
+data23 <- readRDS("2023Main")
+merged_df <- readRDS("2019_2023Analysis")
+```
+
+[Differences in Ecological Measurements between Categories of Sustainability]{.underline}
+
+```{r, warning = FALSE}
+#| echo: false
+num_countries23 <- ggplot(data23, aes(x = category, y = num_countries_required)) + 
+  geom_boxplot()+
+  ylim(0, 20) +
+  labs(title = "Number of Countries Required by Category", 
+       x = "Category",
+       y = "Number of Countries")+
+  annotate(
+    "text", label = "*",
+    color = "red",
+    size = 10, 
+    x = c("1", "3"), 
+    y = c(1.8, 18)
+  )+
+  annotate(
+    "text", label = "*",
+    color = "blue",
+    size = 10, 
+    x = c("2", "3"), 
+    y = c(1.8, 19)
+  )
+
+num_earths23 <- ggplot(data23, aes(x = category, y = num_earths_required)) + 
+  geom_boxplot()+
+  ylim(0, 11)+
+  labs(title = "Number of Earths Required by Category", 
+       x = "Category",
+       y = "Number of Countries")+
+  annotate(
+    "text", label = "*",
+    color = "red",
+    size = 10, 
+    x = c("1", "2"), 
+    y = c(6, 1.5)
+  )+
+  annotate(
+    "text", label = "*",
+    color = "blue",
+    size = 10, 
+    x = c("1", "4"), 
+    y = c(6.5, 1.3)
+  )+
+  annotate(
+    "text", label = "*",
+    color = "green",
+    size = 10, 
+    x = c("2", "3"), 
+    y = c(2, 9.5)
+  )+
+  annotate(
+    "text", label = "*",
+    color = "purple",
+    size = 10, 
+    x = c("3", "4"), 
+    y = c(10, 1.8)
+  )
+
+fp23 <- ggplot(data23, aes(x = category, y = total_consumption_footprint)) + 
+  geom_boxplot()+
+  ylim(0, 16)+
+  labs(title = "Total Consumption Footprint by Category", 
+       x = "Category",
+       y = "Total Consumption Footprint")+
+  annotate(
+    "text", label = "*",
+    color = "red",
+    size = 10, 
+    x = c("1", "2"), 
+    y = c(9, 2.5)
+  )+
+  annotate(
+    "text", label = "*",
+    color = "blue",
+    size = 10, 
+    x = c("1", "4"), 
+    y = c(9.75, 2.5)
+  )+
+  annotate(
+    "text", label = "*",
+    color = "green",
+    size = 10, 
+    x = c("2", "3"), 
+    y = c(3.25, 14)
+  )+
+  annotate(
+    "text", label = "*",
+    color = "purple",
+    size = 10, 
+    x = c("3", "4"), 
+    y = c(15, 3.25)
+  )
+
+cap23 <- ggplot(data23, aes(x = category, y = total_biocapacity)) + 
+  geom_boxplot()+
+  labs(title = "Total Biocapacity Required by Category", 
+       x = "Category",
+       y = "Total Biocapacity")+ 
+  annotate(
+    "text", label = "*",
+    color = "red",
+    size = 10, 
+    x = c("1", "2"), 
+    y = c(25, 15)
+  )+
+  annotate(
+    "text", label = "*",
+    color = "blue",
+    size = 10, 
+    x = c("1", "3"), 
+    y = c(30, 15)
+  )+
+  annotate(
+    "text", label = "*",
+    color = "green",
+    size = 10, 
+    x = c("1", "4"), 
+    y = c(35, 15)
+  )
+
+plots23 <- annotate_figure(ggarrange(num_countries23, num_earths23, fp23, cap23,
+                    ncol = 2, nrow = 2), top = text_grob("2023"))
+plots23
+
+
+```
+
+[Different Footprints and Resource Availability within Categories of Sustainability]{.underline}
+
+```{r}
+#| echo: false
+2 * 2
+```
+
+The `echo: false` option disables the printing of code (only output is displayed).
+
+## Discussion
+
+## References
+
+<https://overshoot.footprintnetwork.org/newsroom/past-earth-overshoot-days>/
+
+## Code and Data Availability
+
+## Acknowledgements
