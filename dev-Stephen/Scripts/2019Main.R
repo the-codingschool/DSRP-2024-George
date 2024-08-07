@@ -8,6 +8,7 @@ library(stringr)
 
 #Reading in data, cleaning names, and data summary
 data19 <- read.csv("data/Global Ecological Footprint 2019.csv")
+
 data19 <- as.data.frame(data19) |> 
   clean_names(case = "snake") |>
   rename(builtup_land_footprint = built_up_land,
@@ -369,9 +370,9 @@ ScheffeTest(anova_result_forest_fp)
 
 ggplot(data19, aes(x = category, y = forest_capacity))+
   geom_boxplot()+
-  labs(title = "Forest Production Capacity by Category", 
+  labs(title = "Forest Capacity by Category", 
        x = "Category",
-       y = "Forest Production Capacity")+
+       y = "Forest Capacity")+
   ylim(0, 20)+
   annotate(
     "text", label = "*",

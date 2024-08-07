@@ -263,6 +263,7 @@ ggplot(data23, aes(x = category, y = grazing_footprint))+
   labs(title = "Grazing Footprint by Category", 
        x = "Category",
        y = "Grazing Footprint")+
+  ylim(0,2.5)+
   annotate(
     "text", label = "*",
     color = "red",
@@ -363,9 +364,9 @@ ScheffeTest(anova_result_forest_fp)
 
 ggplot(data23, aes(x = category, y = forest_capacity))+
   geom_boxplot()+
-  labs(title = "Forest Production Capacity by Category", 
+  labs(title = "Forest Capacity by Category", 
        x = "Category",
-       y = "Forest Production Capacity")+
+       y = "Forest Capacity")+
   ylim(0, 20)+
   annotate(
     "text", label = "*",

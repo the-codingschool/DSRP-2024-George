@@ -147,6 +147,7 @@ gdp_t_test
 
 ggplot(crop_df, aes(x = d_per_capita_gdp, y = d_cropland_footprint, color = category23))+
   geom_point()+
+  labs(title = "Per Capita GDP Growth Vs Cropland Footprint Growth")+
   xlim(-0.25,0.25)
 
 crop_fp_test <- cor.test(crop_df$d_per_capita_gdp, crop_df$d_cropland_footprint, use = "complete.obs")
@@ -227,6 +228,7 @@ land_fp_test
 
 ggplot(builtup_land_df, aes(x = d_per_capita_gdp, y = d_land_capacity, color = category23))+
   geom_point() +
+  labs(title = "Per Capita GDP Growth Vs Built up Land Capacity Growth")+
   xlim(-0.25,0.25)+
   geom_smooth(method = "lm", se = FALSE, color = "blue")
 
@@ -251,6 +253,7 @@ carbon_fp_test
 #Crop
 ggplot(crop_df, aes(x = d_cropland_footprint, d_num_earths, color = category23))+
   geom_point()+
+  labs(title = "Change in Num Earths Required vs Change in Cropland Footprint")+
   geom_smooth(method = "lm", se = FALSE, color = "blue")
 
 crop_fp_earth_test <- cor.test(crop_df$d_cropland_footprint, crop_df$d_num_earths, use = "complete.obs")
@@ -258,6 +261,7 @@ crop_fp_earth_test
 #p-value = 3.836e-05
 
 ggplot(crop_df, aes(x = d_cropland_footprint, d_num_countries, color = category23))+
+  labs(title = "Change in Num Countries Required vs Change in Cropland Footprint")+
   geom_point()
 
 crop_fp_country_test <- cor.test(crop_df$d_cropland_footprint, crop_df$d_num_countries, use = "complete.obs")
@@ -266,6 +270,7 @@ crop_fp_country_test
 
 ggplot(crop_df, aes(x = d_cropland_capacity, d_num_earths, color = category23))+
   geom_point()+
+  labs(title = "Change in Num Earths Required vs Change in Cropland Capacity")+
   geom_smooth(method = "lm", se = FALSE, color = "blue")
 
 crop_cap_earth_test <- cor.test(crop_df$d_cropland_capacity, crop_df$d_num_earths, use = "complete.obs")
@@ -274,6 +279,7 @@ crop_cap_earth_test
 
 ggplot(crop_df, aes(x = d_cropland_capacity, d_num_countries, color = category23))+
   geom_point()+
+  labs(title = "Change in Num Countries Required vs Change in Cropland Capacity")+
   geom_smooth(method = "lm", se = FALSE, color = "blue")
 
 crop_cap_countries_test <- cor.test(crop_df$d_cropland_capacity, crop_df$d_num_countries, use = "complete.obs")
