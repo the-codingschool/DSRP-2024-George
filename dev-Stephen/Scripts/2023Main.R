@@ -532,4 +532,4 @@ anova_result_carbon <- aov(carbon_footprint ~ category, data = carbon_df, na.act
 summary(anova_result_carbon)
 
 ScheffeTest(anova_result_carbon)
-#2-1, 4-1, 3-2, 4-3
+#2-1, 4-1, 3-2, 4-3, 
