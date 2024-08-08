@@ -1,0 +1,27 @@
+# The Correlation Between a Country’s Financial Status and Its Sustainability
+
+by Pranav Sant
+
+## Background
+
+The average global temperature has skyrocketed over the years, caused by excess carbon emissions and waste. This is primarily caused by a global ecological footprint that significantly exceeds our bio-capacity, causing us to deplete our resources as well as release waste and carbon into the environment. Because some countries contribute to this unsustainable behavior more than others, it is important to explore any possible trends or reasons that may cause this.
+
+## Results
+
+## Discussion
+
+While many of the graphs show a strong general trend indicating that stronger economic status leads to greater unsustainability, the use of the T-tests has shown that there is no significant correlation between the two. The T-test that uses the two HDI groups and the number of earths required results in a p-value of 0.427, which is not significant. The T-test that uses these same groups and the ecological reserve has a p-value of 0.05548, which is closer to the threshold of 0.05 but still insignificant.
+
+However, the ANOVA tests do show some significant correlations. The one that explored income groups and earths required had a P-value of 2 \* 10^-16^, which means that there is a clear significant correlation between the income group classification and the earths required. A similar result occured from the Income group vs ecological reserve test, which had a p-value of 0.000818, which is also significant.
+
+We also compared the region and the sustainability, which also had a significant correlation, with p-values of 3.51 \* 10^-14^ and 8.19 \* 10^-11^ for the earths required and ecological reserve respectively.
+
+Additionally, we also created machine learning models to see if the trends resulted in predictable values. The first was a linear regression that would predict the earths required based on the GDP per capita. This resulted in an R^2^ value that was around 0.6 to 0.8 depending on how the data was randomly split. Also, the K Nearest Neighbors strategy intended to predict a country's income group based on the number of earths required and its ecological reserve. The resulting model had a confusion matrix accuracy ranging from 0.5 to 0.6. Overall, both of these models performed with mediocre correctness, and indicate a general correlation that is not strictly followed by the sampled countries.
+
+## Code and Data Availability
+
+The dataset that we used is available at <https://www.kaggle.com/datasets/jainaru/global-ecological-footprint-2023> and the GitHub repository can be found here: <https://github.com/the-codingschool/DSRP-2024-George/tree/dev-Pranav>
+
+## Acknowledgements
+
+I would like to acknowledge George for guiding me through this research project, helping me properly understand the data and providing me with questions to explore along my research journey. I would also like to thank Shruti, who helped teach me the R language and answered countless programming questions throughout my research process.
