@@ -2,7 +2,6 @@ library(caTools)
 library(readr)
 library(ggplot2)
 library(downloader)
-library(caTools)
 library(FNN)
 library(readxl)
 
@@ -12,8 +11,8 @@ clean_data
 
 median(clean_data$hdi, na.rm = TRUE)
 
-high_hdi <- subset(clean_data, hdi >= 0.73)
-low_hdi <- subset(clean_data, hdi < 0.73)
+high_hdi <- subset(clean_data, hdi >= 0.5)
+low_hdi <- subset(clean_data, hdi < 0.5)
 
 # change cutoff
 
@@ -72,9 +71,9 @@ lr_pred <- predict(lr_model, newdata = lr_test_data)
 ggplot(data = lr_test_data, aes(x = number_of_earths_required, y = lr_pred)) +
   geom_point() +
   geom_abline(slope = 1, intercept = 0, linetype = "solid", color = "red", lwd = 1) +
-  labs(title = "Real vs Predicted Values",
-       x = "True Progression",
-       y = "Predicted Progression")
+  labs(title = "Real vs Predicted Values in Linear Regression Model",
+       x = "True Values",
+       y = "Predicted Values")
 
 lr_mse <- mean((lr_test_data$number_of_earths_required - lr_pred)^2, na.rm = TRUE)
 lr_r2 <- summary(lr_model)$r.squared

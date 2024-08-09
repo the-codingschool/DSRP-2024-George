@@ -76,6 +76,12 @@ ggplot(data = clean_data, aes(x = income_group, y = total_ecological_footprint_c
        x = "income group",
        y = "consumption")
 
+ggplot(data = clean_data, aes(x = income_group, y = number_of_earths_required)) +
+  geom_bar(stat = "identity") +
+  labs(title = "Earths Required by Income Group",
+       x = "Income Group",
+       y = "Earths Required")
+
 ggplot(data = clean_data, aes(x = population_millions, y = total_biocapacity)) +
   geom_point() +
   labs(title = "Population vs Total Biocapacity",

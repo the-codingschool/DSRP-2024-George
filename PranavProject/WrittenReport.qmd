@@ -8,6 +8,103 @@ The average global temperature has skyrocketed over the years, caused by excess 
 
 ## Results
 
+```{r setup}
+#! echo: FALSE
+#! message: FALSE
+
+library(dplyr)
+library(tidyr)
+library(janitor)
+library(ggplot2)
+
+clean_data <- readRDS("clean_data.rds")
+```
+
+```{r}
+ggplot(data = clean_data, aes(x = per_capita_gdp, y = number_of_earths_required)) +
+  geom_point() +
+  labs(title = "GDP Per Capita vs. Number of Earths Required",
+       x = "GDP per capita ($)",
+       y = "Earths Required")
+```
+
+```{r}
+ggplot(data = clean_data, aes(x = per_capita_gdp, y = ecological_deficit_or_reserve, color = hdi)) +
+  geom_point() +
+  labs(title = "GDP Per Capita vs Ecological Reserve by Human Development Index",
+       x = "GDP Per Capita ($)",
+       y = "Eco Reserve (Hectares per Person)") +
+  geom_smooth(color = "red") + ylim(-15, 15)
+```
+
+```{r}
+ggplot(data = clean_data, aes(x = per_capita_gdp, y = number_of_earths_required, color = hdi)) +
+  geom_point() +
+  labs(title = "GDP Per Capita vs Number of Earths Required by HDI",
+       x = "GDP Per Capita",
+       y = "Earths Required") +
+  geom_smooth(color = "red")
+```
+
+```{r}
+grouped_data <- clean_data %>%
+  mutate(group = case_when(
+    gdp < 27885 ~ 1,
+    gdp > 27885 & gdp < 100136.2 ~ 2,
+    gdp > 100136.2 & gdp < 438837.8 ~ 3,
+    gdp > 438837.8 ~ 4
+  ))
+
+group1 <- subset(grouped_data, group == 1)
+group2 <- subset(grouped_data, group == 2)
+group3 <- subset(grouped_data, group == 3)
+group4 <- subset(grouped_data, group == 4)
+
+grouped_avg <- aggregate(grouped_data$number_of_earths_required, list(grouped_data$group), FUN = mean) 
+
+ggplot(data = grouped_avg, aes(x = Group.1, y = x)) +
+  geom_bar(stat = "identity", fill = "darkblue") +
+  labs(title = "Number of Earths Required by GDP Group", x = "Group", y = "Earths Required")
+```
+
+```{r}
+
+reordered_income_group <- factor(clean_data$income_group, levels=c("LI", "LM", "UM", "HI"))
+
+
+ggplot(data = clean_data, aes(x = reordered_income_group, y = number_of_earths_required)) +
+  geom_boxplot() +
+  labs(title = "Earths Required by Income Group",
+       x = "Income Group",
+       y = "Earths Required")
+```
+
+```{r}
+ggplot(data = clean_data, aes(x = reordered_income_group, y = ecological_deficit_or_reserve)) +
+  geom_boxplot() +
+  labs(title = "Ecological Reserve by Income Group",
+       x = "Income Group",
+       y = "Ecological Reserve") + ylim(-15, 15)
+```
+
+```{r}
+ggplot(data = clean_data, aes(x = region, y = ecological_deficit_or_reserve)) +
+  geom_boxplot() +
+  labs(title = "Ecological Reserve by Region",
+       x = "Region",
+       y = "Ecological Reserve") +
+  theme(axis.text.x = element_text(angle = 45, vjust = 0.5)) + ylim(-15, 15)
+```
+
+```{r}
+ggplot(data = clean_data, aes(x = region, y = number_of_earths_required)) +
+  geom_boxplot() +
+  labs(title = "Earths required by Region",
+       x = "Region",
+       y = "Earths Required") +
+  theme(axis.text.x = element_text(angle = 45, vjust = 0.5))
+```
+
 ## Discussion
 
 While many of the graphs show a strong general trend indicating that stronger economic status leads to greater unsustainability, the use of the T-tests has shown that there is no significant correlation between the two. The T-test that uses the two HDI groups and the number of earths required results in a p-value of 0.427, which is not significant. The T-test that uses these same groups and the ecological reserve has a p-value of 0.05548, which is closer to the threshold of 0.05 but still insignificant.
@@ -24,4 +121,4 @@ The dataset that we used is available at <https://www.kaggle.com/datasets/jainar
 
 ## Acknowledgements
 
-I would like to acknowledge George for guiding me through this research project, helping me properly understand the data and providing me with questions to explore along my research journey. I would also like to thank Shruti, who helped teach me the R language and answered countless programming questions throughout my research process.
+I would like to acknowledge George Zhou for guiding me through this research project, helping me properly understand the data and providing me with questions to explore along my research journey. I would also like to thank Shruti M and Sarah Parker, who helped teach me the R language and answered countless programming questions throughout my research process.
