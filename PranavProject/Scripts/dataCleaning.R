@@ -240,4 +240,7 @@ low_hdi <- subset(clean_data, hdi < 0.73)
 
 saveRDS(clean_data, "clean_data.rds")
 
+write.csv(clean_data, "clean_data.csv")
+
+
 ?saveRDS

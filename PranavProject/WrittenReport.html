@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>writtenreport</title>
+<title>The Correlation Between a Country’s Financial Status and Its Sustainability</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -43,11 +43,25 @@ ul.task-list li input[type="checkbox"] {
 
 <main class="content" id="quarto-document-content">
 
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">The Correlation Between a Country’s Financial Status and Its Sustainability</h1>
+</div>
 
 
 
-<section id="the-correlation-between-a-countrys-financial-status-and-its-sustainability" class="level1">
-<h1>The Correlation Between a Country’s Financial Status and Its Sustainability</h1>
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
 <p>by Pranav Sant</p>
 <section id="background" class="level2">
 <h2 class="anchored" data-anchor-id="background">Background</h2>
@@ -55,6 +69,231 @@ ul.task-list li input[type="checkbox"] {
 </section>
 <section id="results" class="level2">
 <h2 class="anchored" data-anchor-id="results">Results</h2>
+<section id="initial-data-exploration-and-plotting" class="level3">
+<h3 class="anchored" data-anchor-id="initial-data-exploration-and-plotting">Initial Data Exploration and Plotting</h3>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="WrittenReport_files/figure-html/unnamed-chunk-1-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Figure 1. The correlation between GDP Per Capita and Ecological Reserve with Human Development Index</p>
+<p>This graph shows that as GDP Per Capita increases, the ecological reserve tends to decrease, showing the countries with a greater per capita GDP are generally more unsustainable.</p>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="WrittenReport_files/figure-html/unnamed-chunk-2-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Figure 2. The correlation between GDP Per Capita and Number of Earths Required with Human Development Index</p>
+<p>This graph also supports a similar conclusion to Figure 1. Countries with a higher per capita GDP have an average lifestyle that requires a greater amount of earths, pointing to unsustainability.</p>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="WrittenReport_files/figure-html/unnamed-chunk-3-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Figure 3. The correlation between GDP and Earths Required when GDP is split into groups by quartile. The groups are in order of increasing GDP, with Group 1 having the least GDP and Group 4 having the greatest GDP.</p>
+<p>While Figure 1 and Figure 2 use GDP per capita as a their metric, Figure 3 uses GDP. The data had to be grouped due to some outlier data points, but this graph also shows that countries with stronger economies tend to require more earths.</p>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="WrittenReport_files/figure-html/unnamed-chunk-4-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Figure 4. Box Plots of Various Income Groups and their respective Earths Required</p>
+<p>While figures until now have relied on GDP per capita and GDP metrics, this graph is based on four Income Groups that were defined through the original dataset.</p>
+<p>LI = Low Income, LM = Lower Middle Income, UM = Upper Middle Income, HI = High Income, while the NA category contains countries who were not assigned a group.</p>
+<p>This collection of box plots supports the same conclusions as Figures 1-3, showing that countries with superior financial status tend to be more unsustainable.</p>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="WrittenReport_files/figure-html/unnamed-chunk-5-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Figure 5. Box Plots of Various Income Groups and their respective Ecological Reserve</p>
+<p>Just like Figure 4, this graph uses income groups to demonstrate the more prominent overuse of resources by countries with a higher income. Figures 1-5 have so far supported that the Earths Required and Ecological Reserve are highly similar in terms of how they are reflected by the financial status of countries.</p>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="WrittenReport_files/figure-html/unnamed-chunk-6-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Figure 6. Box Plots of Various Regions and their respective Ecological Reserve</p>
+<p>Instead of directly focusing on finances, Figure 6 examines the correlation between countries’ regions and their ecological reserve through a collection of boxplots for each region. The regions that tend towards being the most unsustainable are Central Asia, Europe, and North America.</p>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="WrittenReport_files/figure-html/unnamed-chunk-7-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Figure 7. Box Plots of Various Regions and their respective Earths Required</p>
+<p>This graph is similar to Figure 6 in that it examines sustainability by the region metric. The most unsustainable regions by Earths Required are North America and Europe. When comparing Figure 6 and Figure 7, we can see one of the first times that the metrics of Earths Required and Ecological Reserve present a slighlty different conclusion, as the regions that are more sustainable than others changes depending on which metric we chose.</p>
+</section>
+<section id="hypothesis-testing" class="level3">
+<h3 class="anchored" data-anchor-id="hypothesis-testing">Hypothesis Testing</h3>
+<section id="t-testing" class="level4">
+<h4 class="anchored" data-anchor-id="t-testing">T-testing</h4>
+<p>The Human Development Index measures basic human development on a scale of 0-1.0, taking into account life expectancy, standard of living, and expected years of schooling. This is generally considered an excellent metric of a country’s financial and developmental status, and thus we can use it as a reliable value to test correlation with sustainability.</p>
+<p>We split the data into two groups, one called “Low HDI” with an HDI of less than 0.5, and the other called “High HDI”, with HDI greater than or equal to 0.5.</p>
+<p>Then, we ran two T-tests to find out if the HDI had a significant correlation with the Earths Required and the Ecological Reserve. For both tests, we set the threshold for significance at 0.05, as we wanted a 95% confidence interval.</p>
+<p>The first test was of the Earths Required. Here, the null hypothesis was: the low HDI and the high HDI have no significant difference in the number of earths required. See Figure 2 for the plot that shows the trend apparent in the data.</p>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>
+    Welch Two Sample t-test
+
+data:  high_hdi$number_of_earths_required and low_hdi$number_of_earths_required
+t = -3.9486, df = 154.25, p-value = 0.0001192
+alternative hypothesis: true difference in means is not equal to 1.961619
+95 percent confidence interval:
+ 1.182521 1.702124
+sample estimates:
+mean of x mean of y 
+ 2.130157  0.687835 </code></pre>
+</div>
+</div>
+<p>This test yielded a p-value that was far less than 0.05, and thus we determined that the high and low HDI groups have a significant difference in Earths Required, allowing us to reject the null hypothesis.</p>
+<p>For the second T-test, we used Ecological Reserve. In this case, the null hypothesis was: the low HDI and the high HDI have no significant difference in ecological reserve. See Figure 1 for the plot that shows the trend apparent in the data.</p>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>
+    Welch Two Sample t-test
+
+data:  high_hdi$ecological_deficit_or_reserve and low_hdi$ecological_deficit_or_reserve
+t = -1.3815, df = 146.15, p-value = 0.1692
+alternative hypothesis: true difference in means is not equal to 0.594438
+95 percent confidence interval:
+ -1.990718  1.052419
+sample estimates:
+mean of x mean of y 
+0.1663464 0.6354959 </code></pre>
+</div>
+</div>
+<p>This test yielded a p-value that was greater than 0.05, and thus we the high and low HDI groups do not have a significant difference in Ecological Reserve, meaning we fail to reject the null hypothesis.</p>
+</section>
+<section id="anova-testing" class="level4">
+<h4 class="anchored" data-anchor-id="anova-testing">ANOVA testing</h4>
+<p>We used ANOVA testing to see if there was a significant difference in the mean of the Earths Required and Ecological Reserve between Income Groups. Once again, we used a confidence interval of 95%, meaning we need a p-value less than 0.05 for significance.</p>
+<p>First, we looked at Earths Required. The null hypothesis here is: there is no significant difference in the earths required between the different income groups.</p>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>              Df Sum Sq Mean Sq F value Pr(&gt;F)    
+income_group   4  217.4   54.36   58.67 &lt;2e-16 ***
+Residuals    176  163.1    0.93                   
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+1 observation deleted due to missingness</code></pre>
+</div>
+</div>
+<p>The ANOVA test yields a p-value far less than 0.05, and thus we can confidently reject the null hypothesis, proving that income group is correlated with earths required.</p>
+<p>Next, we looked at Ecological Reserve. The null hypothesis here is: there is no significant difference in the ecological reserve between the different income groups</p>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>              Df Sum Sq Mean Sq F value   Pr(&gt;F)    
+income_group   4   1863   465.8   4.962 0.000818 ***
+Residuals    176  16523    93.9                     
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+1 observation deleted due to missingness</code></pre>
+</div>
+</div>
+<p>The result here also has a p-value less than 0.05, so we can also reject this null hypothesis. Through this, we know that unlike HDI, income group has a strong correlation with sustainability using both metrics, not just Earths Required.</p>
+<p>We conducted similar testing for the region, seeing if there was a significant difference in the sustainability of different areas of the world. The confidence interval remained at 95%. The results were as follows.</p>
+<p>For Region vs Earths Required, the Null Hypothesis was: There is no significant difference in the earths required of any two regions.</p>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>             Df Sum Sq Mean Sq F value   Pr(&gt;F)    
+region        7  136.6   19.51   13.84 3.51e-14 ***
+Residuals   173  243.9    1.41                     
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+1 observation deleted due to missingness</code></pre>
+</div>
+</div>
+<p>The p-value is less than 0.05, so we reject the null hypothesis.</p>
+<p>For Region vs Ecological Reserve, the Null Hypothesis was: There is no significant difference in the ecological reserve of any two regions.</p>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>             Df Sum Sq Mean Sq F value   Pr(&gt;F)    
+region        7   5425   774.9   10.34 8.19e-11 ***
+Residuals   173  12961    74.9                     
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+1 observation deleted due to missingness</code></pre>
+</div>
+</div>
+<p>The p-value is less than 0.05, so we once again reject the null hypothesis.</p>
+<p>Regarding the region metric, both tests yielded significant results, showing that there is a significant difference in sustainability by region using both earths required and ecological reserve.</p>
+</section>
+</section>
+<section id="machine-learning-models" class="level3">
+<h3 class="anchored" data-anchor-id="machine-learning-models">Machine Learning Models</h3>
+<p>To see how accurately we could predict various metrics using the correlation between financial status and sustainability, we used the machine learning models Logistic Regression and K-Nearest Neighbors and tested their accuracy.</p>
+<section id="logistic-regression" class="level4">
+<h4 class="anchored" data-anchor-id="logistic-regression">Logistic Regression</h4>
+<p>We used the logistic regression to predict the earths required using the metrics of GDP per capita and HDI.</p>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="WrittenReport_files/figure-html/unnamed-chunk-15-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>R squared value: 0.704489</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Mean Squared Error: 1.114406</code></pre>
+</div>
+</div>
+<p>Depending on the split, the R squared value for this model can range from 0.5 to 0.9 and the Mean Squared Error can range from 0.6 to 1.3. Overall, this model shows mediocre accuracy. However, it provest that there is a trend in the data.</p>
+</section>
+<section id="k-nearest-neighbors" class="level4">
+<h4 class="anchored" data-anchor-id="k-nearest-neighbors">K-Nearest Neighbors</h4>
+<p>We used a K-nearest neighbors model to predict the income group using Earths Required and Ecological Reserve.</p>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>Confusion Matrix:</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>      pred
+actual   HI LI LM UM
+       1  0  0  0  0
+    HI 0  6  0  2  1
+    LI 0  0  4  2  1
+    LM 0  0  2  2  5
+    UM 0  0  0  3  6</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Accuracy: 0.5428571</code></pre>
+</div>
+</div>
+<p>Depending on the split, the Confusion Matrix accuracy can range from 0.4 to 0.7. Overall, this model also shows mediocre accuracy, but it also proves that there is a real trend.</p>
+</section>
+</section>
 </section>
 <section id="discussion" class="level2">
 <h2 class="anchored" data-anchor-id="discussion">Discussion</h2>
@@ -69,8 +308,7 @@ ul.task-list li input[type="checkbox"] {
 </section>
 <section id="acknowledgements" class="level2">
 <h2 class="anchored" data-anchor-id="acknowledgements">Acknowledgements</h2>
-<p>I would like to acknowledge George for guiding me through this research project, helping me properly understand the data and providing me with questions to explore along my research journey. I would also like to thank Shruti, who helped teach me the R language and answered countless programming questions throughout my research process.</p>
-</section>
+<p>I would like to acknowledge George Zhou for guiding me through this research project, helping me properly understand the data and providing me with questions to explore along my research journey. I would also like to thank Shruti M and Sarah Parker, who helped teach me the R language and answered countless programming questions throughout my research process.</p>
 </section>
 
 </main>

@@ -1,4 +1,10 @@
-# The Correlation Between a Country’s Financial Status and Its Sustainability
+---
+title: "The Correlation Between a Country’s Financial Status and Its Sustainability"
+execute:
+  echo: FALSE
+  warning: FALSE
+  error: FALSE
+---
 
 by Pranav Sant
 
@@ -6,26 +12,21 @@ by Pranav Sant
 
 The average global temperature has skyrocketed over the years, caused by excess carbon emissions and waste. This is primarily caused by a global ecological footprint that significantly exceeds our bio-capacity, causing us to deplete our resources as well as release waste and carbon into the environment. Because some countries contribute to this unsustainable behavior more than others, it is important to explore any possible trends or reasons that may cause this.
 
+add: two metrics useful in looking at sustainability are number of earths required and ecological reserve, expllain what they are
+
 ## Results
 
-```{r setup}
-#! echo: FALSE
-#! message: FALSE
+### Initial Data Exploration and Plotting
 
+```{r setup}
 library(dplyr)
 library(tidyr)
 library(janitor)
 library(ggplot2)
+library(caTools)
+library(FNN)
 
-clean_data <- readRDS("clean_data.rds")
-```
-
-```{r}
-ggplot(data = clean_data, aes(x = per_capita_gdp, y = number_of_earths_required)) +
-  geom_point() +
-  labs(title = "GDP Per Capita vs. Number of Earths Required",
-       x = "GDP per capita ($)",
-       y = "Earths Required")
+clean_data <- read.csv("C:/Users/pranav/Documents/Coding/DSRP-2024-George/PranavProject/Data/clean_data.csv")
 ```
 
 ```{r}
@@ -37,6 +38,10 @@ ggplot(data = clean_data, aes(x = per_capita_gdp, y = ecological_deficit_or_rese
   geom_smooth(color = "red") + ylim(-15, 15)
 ```
 
+Figure 1. The correlation between GDP Per Capita and Ecological Reserve with Human Development Index
+
+This graph shows that as GDP Per Capita increases, the ecological reserve tends to decrease, showing the countries with a greater per capita GDP are generally more unsustainable.
+
 ```{r}
 ggplot(data = clean_data, aes(x = per_capita_gdp, y = number_of_earths_required, color = hdi)) +
   geom_point() +
@@ -45,6 +50,10 @@ ggplot(data = clean_data, aes(x = per_capita_gdp, y = number_of_earths_required,
        y = "Earths Required") +
   geom_smooth(color = "red")
 ```
+
+Figure 2. The correlation between GDP Per Capita and Number of Earths Required with Human Development Index
+
+This graph also supports a similar conclusion to Figure 1. Countries with a higher per capita GDP have an average lifestyle that requires a greater amount of earths, pointing to unsustainability.
 
 ```{r}
 grouped_data <- clean_data %>%
@@ -67,6 +76,10 @@ ggplot(data = grouped_avg, aes(x = Group.1, y = x)) +
   labs(title = "Number of Earths Required by GDP Group", x = "Group", y = "Earths Required")
 ```
 
+Figure 3. The correlation between GDP and Earths Required when GDP is split into groups by quartile. The groups are in order of increasing GDP, with Group 1 having the least GDP and Group 4 having the greatest GDP.
+
+While Figure 1 and Figure 2 use GDP per capita as a their metric, Figure 3 uses GDP. The data had to be grouped due to some outlier data points, but this graph also shows that countries with stronger economies tend to require more earths.
+
 ```{r}
 
 reordered_income_group <- factor(clean_data$income_group, levels=c("LI", "LM", "UM", "HI"))
@@ -79,6 +92,14 @@ ggplot(data = clean_data, aes(x = reordered_income_group, y = number_of_earths_r
        y = "Earths Required")
 ```
 
+Figure 4. Box Plots of Various Income Groups and their respective Earths Required
+
+While figures until now have relied on GDP per capita and GDP metrics, this graph is based on four Income Groups that were defined through the original dataset.
+
+LI = Low Income, LM = Lower Middle Income, UM = Upper Middle Income, HI = High Income, while the NA category contains countries who were not assigned a group.
+
+This collection of box plots supports the same conclusions as Figures 1-3, showing that countries with superior financial status tend to be more unsustainable.
+
 ```{r}
 ggplot(data = clean_data, aes(x = reordered_income_group, y = ecological_deficit_or_reserve)) +
   geom_boxplot() +
@@ -86,6 +107,10 @@ ggplot(data = clean_data, aes(x = reordered_income_group, y = ecological_deficit
        x = "Income Group",
        y = "Ecological Reserve") + ylim(-15, 15)
 ```
+
+Figure 5. Box Plots of Various Income Groups and their respective Ecological Reserve
+
+Just like Figure 4, this graph uses income groups to demonstrate the more prominent overuse of resources by countries with a higher income. Figures 1-5 have so far supported that the Earths Required and Ecological Reserve are highly similar in terms of how they are reflected by the financial status of countries.
 
 ```{r}
 ggplot(data = clean_data, aes(x = region, y = ecological_deficit_or_reserve)) +
@@ -96,6 +121,10 @@ ggplot(data = clean_data, aes(x = region, y = ecological_deficit_or_reserve)) +
   theme(axis.text.x = element_text(angle = 45, vjust = 0.5)) + ylim(-15, 15)
 ```
 
+Figure 6. Box Plots of Various Regions and their respective Ecological Reserve
+
+Instead of directly focusing on finances, Figure 6 examines the correlation between countries' regions and their ecological reserve through a collection of boxplots for each region. The regions that tend towards being the most unsustainable are Central Asia, Europe, and North America.
+
 ```{r}
 ggplot(data = clean_data, aes(x = region, y = number_of_earths_required)) +
   geom_boxplot() +
@@ -105,7 +134,175 @@ ggplot(data = clean_data, aes(x = region, y = number_of_earths_required)) +
   theme(axis.text.x = element_text(angle = 45, vjust = 0.5))
 ```
 
+Figure 7. Box Plots of Various Regions and their respective Earths Required
+
+This graph is similar to Figure 6 in that it examines sustainability by the region metric. The most unsustainable regions by Earths Required are North America and Europe. When comparing Figure 6 and Figure 7, we can see one of the first times that the metrics of Earths Required and Ecological Reserve present a slighlty different conclusion, as the regions that are more sustainable than others changes depending on which metric we chose.
+
+### Hypothesis Testing
+
+#### T-testing
+
+The Human Development Index measures basic human development on a scale of 0-1.0, taking into account life expectancy, standard of living, and expected years of schooling. This is generally considered an excellent metric of a country's financial and developmental status, and thus we can use it as a reliable value to test correlation with sustainability.
+
+We split the data into two groups, one called "Low HDI" with an HDI of less than 0.5, and the other called "High HDI", with HDI greater than or equal to 0.5.
+
+Then, we ran two T-tests to find out if the HDI had a significant correlation with the Earths Required and the Ecological Reserve. For both tests, we set the threshold for significance at 0.05, as we wanted a 95% confidence interval.
+
+```{r}
+
+high_hdi <- subset(clean_data, hdi >= 0.5)
+low_hdi <- subset(clean_data, hdi < 0.5)
+```
+
+The first test was of the Earths Required. Here, the null hypothesis was: the low HDI and the high HDI have no significant difference in the number of earths required. See Figure 2 for the plot that shows the trend apparent in the data.
+
+```{r}
+t.test(high_hdi$number_of_earths_required, low_hdi$number_of_earths_required, mu = mean(clean_data$number_of_earths_required, na.rm = TRUE))
+```
+
+This test yielded a p-value that was far less than 0.05, and thus we determined that the high and low HDI groups have a significant difference in Earths Required, allowing us to reject the null hypothesis.
+
+For the second T-test, we used Ecological Reserve. In this case, the null hypothesis was: the low HDI and the high HDI have no significant difference in ecological reserve. See Figure 1 for the plot that shows the trend apparent in the data.
+
+```{r}
+t.test(high_hdi$ecological_deficit_or_reserve, low_hdi$ecological_deficit_or_reserve, mu = mean(clean_data$ecological_deficit_or_reserve, na.rm = TRUE))
+
+```
+
+This test yielded a p-value that was greater than 0.05, and thus we the high and low HDI groups do not have a significant difference in Ecological Reserve, meaning we fail to reject the null hypothesis.
+
+#### ANOVA testing
+
+We used ANOVA testing to see if there was a significant difference in the mean of the Earths Required and Ecological Reserve between Income Groups. Once again, we used a confidence interval of 95%, meaning we need a p-value less than 0.05 for significance.
+
+First, we looked at Earths Required. The null hypothesis here is: there is no significant difference in the earths required between the different income groups.
+
+```{r}
+earths_aov <- aov(data = clean_data, number_of_earths_required ~ income_group)
+summary(earths_aov)
+```
+
+The ANOVA test yields a p-value far less than 0.05, and thus we can confidently reject the null hypothesis, proving that income group is correlated with earths required.
+
+Next, we looked at Ecological Reserve. The null hypothesis here is: there is no significant difference in the ecological reserve between the different income groups
+
+```{r}
+reserve_aov <- aov(data = clean_data, ecological_deficit_or_reserve ~ income_group)
+summary(reserve_aov)
+```
+
+The result here also has a p-value less than 0.05, so we can also reject this null hypothesis. Through this, we know that unlike HDI, income group has a strong correlation with sustainability using both metrics, not just Earths Required.
+
+We conducted similar testing for the region, seeing if there was a significant difference in the sustainability of different areas of the world. The confidence interval remained at 95%. The results were as follows.
+
+For Region vs Earths Required, the Null Hypothesis was: There is no significant difference in the earths required of any two regions.
+
+```{r}
+region_earths_aov <- aov(data = clean_data, number_of_earths_required ~ region)
+summary(region_earths_aov)
+```
+
+The p-value is less than 0.05, so we reject the null hypothesis.
+
+For Region vs Ecological Reserve, the Null Hypothesis was: There is no significant difference in the ecological reserve of any two regions.
+
+```{r}
+region_reserve_aov <- aov(data = clean_data, ecological_deficit_or_reserve ~ region)
+
+summary(region_reserve_aov)
+```
+
+The p-value is less than 0.05, so we once again reject the null hypothesis.
+
+Regarding the region metric, both tests yielded significant results, showing that there is a significant difference in sustainability by region using both earths required and ecological reserve.
+
+### Machine Learning Models
+
+To see how accurately we could predict various metrics using the correlation between financial status and sustainability, we used the machine learning models Logistic Regression and K-Nearest Neighbors and tested their accuracy.
+
+#### Logistic Regression
+
+We used the logistic regression to predict the earths required using the metrics of GDP per capita and HDI.
+
+```{r}
+lr_split <- sample.split(clean_data$number_of_earths_required, SplitRatio = 0.8)
+lr_train_data <- subset(clean_data, lr_split == TRUE)
+lr_test_data <- subset(clean_data, lr_split == FALSE)
+
+lr_model <- lm(number_of_earths_required ~ hdi + per_capita_gdp, data = lr_train_data)
+
+lr_pred <- predict(lr_model, newdata = lr_test_data)
+
+
+ggplot(data = lr_test_data, aes(x = number_of_earths_required, y = lr_pred)) +
+  geom_point() +
+  geom_abline(slope = 1, intercept = 0, linetype = "solid", color = "red", lwd = 1) +
+  labs(title = "Real vs Predicted Values in Linear Regression Model",
+       x = "True Values",
+       y = "Predicted Values")
+
+lr_mse <- mean((lr_test_data$number_of_earths_required - lr_pred)^2, na.rm = TRUE)
+lr_r2 <- summary(lr_model)$r.squared
+
+cat("R squared value:", lr_r2)
+cat("\n")
+cat("Mean Squared Error:", lr_mse)
+
+```
+
+Depending on the split, the R squared value for this model can range from 0.5 to 0.9 and the Mean Squared Error can range from 0.6 to 1.3. Overall, this model shows mediocre accuracy. However, it provest that there is a trend in the data.
+
+#### K-Nearest Neighbors
+
+We used a K-nearest neighbors model to predict the income group using Earths Required and Ecological Reserve.
+
+```{r}
+knn_data <- clean_data[, c('income_group', 'ecological_deficit_or_reserve', 'number_of_earths_required')]
+
+knn_data <- na.omit(knn_data)
+
+knn_split <- sample.split(knn_data$income_group, SplitRatio = 0.8)
+knn_train_data <- subset(knn_data, knn_split == TRUE)
+knn_test_data <- subset(knn_data, knn_split == FALSE)
+
+
+knn_model <- knn(train <- knn_train_data[, c('number_of_earths_required', 'ecological_deficit_or_reserve')],
+                 test <- knn_test_data[, c('number_of_earths_required', 'ecological_deficit_or_reserve')],
+                 cl = knn_train_data$income_group)
+
+
+pred <- knn_model
+
+actual <- knn_test_data$income_group
+
+cm <- table(actual, pred)
+cat("Confusion Matrix:\n")
+cm
+
+cat("Accuracy:", sum(diag(cm)) / sum(cm))
+```
+
+Depending on the split, the Confusion Matrix accuracy can range from 0.4 to 0.7. Overall, this model also shows mediocre accuracy, but it also proves that there is a real trend.
+
 ## Discussion
+
+Points to discuss:
+
+Obvious trend just from graphs that shows richer countries being more unsustainable
+
+Regarding region, regions that are considered "wealthier" by traditional standards have greater unsustainability just by looking at graphs.
+
+HDI is not as reflective of sustainability as income group, as it has no correlation to ecological reserve. Kind of makes sense because it wouldn't have much to do with how much more they are using compared to what they have
+
+All other tests came out to be significant, showing that there is a major trend and could be possible to initiate change.
+
+More research to be done, not all values were filled (limitation of dataset)
+
+Although we know that wealthier countries consume more, we still need to look deeper into what resources exaclty they are consuming and what are the causes of this
+
+Ideal solution: change of lifestyle, but impractical because of sacrifices people will have to make
+
+Possible solution: advocate for change, government uses/encourages more sustainable practices
 
 While many of the graphs show a strong general trend indicating that stronger economic status leads to greater unsustainability, the use of the T-tests has shown that there is no significant correlation between the two. The T-test that uses the two HDI groups and the number of earths required results in a p-value of 0.427, which is not significant. The T-test that uses these same groups and the ecological reserve has a p-value of 0.05548, which is closer to the threshold of 0.05 but still insignificant.
 
