@@ -930,6 +930,8 @@ In 2019 and 2023, cropland footprint and capacity were some of the most signific
 
 ## References
 
+jaina. (2023). *Global Ecological Footprint 2023🌐\[latest report\]*. Kaggle.com. https://www.kaggle.com/datasets/jainaru/global-ecological-footprint-2023/data
+
 *Past Earth Overshoot Days* (n.d.). Earth Overshoot Day. https://overshoot.footprintnetwork.org/newsroom/past-earth-overshoot-days/
 
 ## Code and Data Availability
