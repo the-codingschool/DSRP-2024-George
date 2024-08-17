@@ -169,7 +169,7 @@ t.test(high_hdi$ecological_deficit_or_reserve, low_hdi$ecological_deficit_or_res
 
 ```
 
-This test yielded a p-value that was greater than 0.05, and thus we the high and low HDI groups do not have a significant difference in Ecological Reserve, meaning we fail to reject the null hypothesis.
+This test yielded a p-value that was greater than 0.05, and thus the high and low HDI groups do not have a significant difference in Ecological Reserve, meaning we fail to reject the null hypothesis.
 
 #### ANOVA testing
 
